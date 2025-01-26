@@ -13,9 +13,10 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        data = request.get_json()  # Get JSON data from the request
-        if not data:
-            return jsonify({"error": "Invalid or missing JSON payload"}), 400
+        if request.is_json:
+            data = request.get_json()
+        else:
+            data = request.form
 
         username = data.get('username')
         password = data.get('password')

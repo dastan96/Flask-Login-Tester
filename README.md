@@ -53,6 +53,7 @@ This project was built to:
 
 5. Open your browser and visit `http://127.0.0.1:5000`.
 
+
 ### API Endpoints
 #### 1. `/register` (POST)
 - **Description**: Register a new user.
@@ -63,3 +64,13 @@ This project was built to:
       "password": "examplepass",
       "confirm_password": "examplepass"
   }
+
+  ## Postman Collection and Environment
+To test the Flask Login API, you can use the provided Postman collection and environment:
+1. **Import the Collection**:
+   - Go to Postman > Import > Upload the `Flask-Login-API-Tests.postman_collection.json` file.
+2. **Import the Environment**:
+   - Go to Postman > Manage Environments > Import > Upload the `render-environment.json` file.
+3. **Run the Tests**:
+   - Select the `Render Deployment` environment.
+   - Run individual requests or use the Postman Runner to run all tests in the collection.

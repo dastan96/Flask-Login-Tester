@@ -54,15 +54,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/register",
-							"protocol": "http",
+							"raw": "{{base_url}}/register",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"register"
 							]
@@ -77,12 +72,18 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"const response = pm.response.json();",
+									"",
 									"pm.test(\"Response status is 200\", function() {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response contains 'Welcome'\", function() {",
-									"    pm.expect(pm.response.text()).to.include(\"Welcome\");",
+									"pm.test(\"Login success message is correct\", function() {",
+									"    pm.expect(response.message).to.eql(\"Login successful\");",
+									"});",
+									"",
+									"pm.test(\"Username is correct\", function() {",
+									"    pm.expect(response.username).to.eql(\"testuser\");",
 									"});"
 								],
 								"type": "text/javascript",
@@ -103,15 +104,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/login",
-							"protocol": "http",
+							"raw": "{{base_url}}/login",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"login"
 							]
@@ -149,15 +145,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/welcome?user=testuser",
-							"protocol": "http",
+							"raw": "{{base_url}}/welcome?user=testuser",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"welcome"
 							],
@@ -220,15 +211,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/register",
-							"protocol": "http",
+							"raw": "{{base_url}}/register",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"register"
 							]
@@ -280,15 +266,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/register",
-							"protocol": "http",
+							"raw": "{{base_url}}/register",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"register"
 							]
@@ -340,15 +321,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/register",
-							"protocol": "http",
+							"raw": "{{base_url}}/register",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"register"
 							]
@@ -400,15 +376,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/register",
-							"protocol": "http",
+							"raw": "{{base_url}}/register",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"register"
 							]
@@ -450,15 +421,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/login",
-							"protocol": "http",
+							"raw": "{{base_url}}/login",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"login"
 							]
@@ -500,15 +466,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/login",
-							"protocol": "http",
+							"raw": "{{base_url}}/login",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"login"
 							]
@@ -550,15 +511,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/login",
-							"protocol": "http",
+							"raw": "{{base_url}}/login",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"{{base_url}}"
 							],
-							"port": "5000",
 							"path": [
 								"login"
 							]
