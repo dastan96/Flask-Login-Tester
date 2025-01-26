@@ -5,11 +5,9 @@ app = Flask(__name__)
 # Mock user data
 users = {"testuser": "password123"}  # A dictionary to store username-password pairs
 
-
 @app.route('/')
 def home():
     return "Welcome to the Login App! Go to /login to log in or /register to register."
-
 
 # Login Route
 @app.route('/login', methods=['GET', 'POST'])
@@ -38,7 +36,6 @@ def login():
             return jsonify({"error": "Invalid credentials. Try again."}), 401
 
     return render_template('login.html')
-
 
 # Register Route
 @app.route('/register', methods=['GET', 'POST'])
@@ -73,7 +70,6 @@ def register():
 
     return render_template('register.html')
 
-
 # Welcome Route
 @app.route('/welcome')
 def welcome():
@@ -83,11 +79,7 @@ def welcome():
         "info": "This is the welcome page."
     }), 200
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
-
-    if __name__ == '__main__':
     # Use the port provided by Render during deployment
     import os
     port = int(os.environ.get("PORT", 5000))
