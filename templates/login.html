@@ -1,22 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Demo Login</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f7fa, #e0eafc);
+      font-family: 'Roboto', sans-serif;
+    }
+    .login-card {
+      max-width: 400px;
+      margin: 5% auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+    .login-card h2 {
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+    .login-card p {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
+    .login-card label {
+      font-weight: 500;
+    }
+    .btn-custom {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: #ffffff;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #0b5ed7;
+      border-color: #0a58ca;
+    }
+    .info-section {
+      max-width: 400px;
+      margin: 1.5rem auto;
+      padding: 1.5rem;
+      background-color: #eaf4fc;
+      color: #000;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+    .info-section h5 {
+      font-weight: 500;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    .info-section ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    .info-section ul li {
+      font-size: 0.95rem;
+      margin: 0.3rem 0;
+    }
+    .info-section p {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #0d6efd;
+      border-radius: 0 0 10px 10px;
+    }
+    .footer a {
+      color: #ffffff;
+      margin: 0 10px;
+      font-size: 24px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer a:hover {
+      color: #d4d4d4;
+    }
+  </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <p>Welcome back! Enter your username and password to log in. If you’re new here, click on register to join the fun!</p>
+  <div class="login-card">
+    <h2 class="text-center">My Demo</h2>
+    <p class="text-center text-muted">
+      Welcome to my automation demo! Please log in to see my charts.
+    </p>
+    <!-- Display error message if credentials are invalid -->
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+    {% endif %}
     <form method="POST" action="/login">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" id="username" name="username" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required />
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-custom">Login</button>
+      </div>
     </form>
-    <a href="/register">Register</a>
+  </div>
+
+  <div class="info-section">
+    <h5>Accepted Usernames:</h5>
+    <ul>
+      <li>guest_user</li>
+      <li>automation_user1</li>
+      <li>automation_user2</li>
+      <li>error_user</li>
+    </ul>
+    <h5>Password for all users:</h5>
+    <p>secret_pass123</p>
+  </div>
+
+  <!-- Footer with LinkedIn and GitHub icons -->
+  <div class="footer">
+    <a href="https://www.linkedin.com/in/dabbassian/" target="_blank" title="LinkedIn">
+      <i class="bi bi-linkedin"></i>
+    </a>
+    <a href="https://github.com/dastan96" target="_blank" title="GitHub">
+      <i class="bi bi-github"></i>
+    </a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

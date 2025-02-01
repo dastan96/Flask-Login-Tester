@@ -1,12 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Demo Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #f9f9f9;
+      font-family: 'Roboto', sans-serif;
+    }
+    .navbar {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .chart-container {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+    table {
+      width: 80%;
+      margin: 2rem auto;
+      border-collapse: collapse;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    table th, table td {
+      text-align: center;
+      padding: 1rem;
+      border: 1px solid #ddd;
+    }
+    table th {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+      background-color: #0d6efd;
+      color: white;
+    }
+    .footer a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-    <h2>Welcome to My Test!</h2>
-    <p>Hey there, {{ username }}! You’ve successfully logged in. Let’s make this your best experience yet!</p>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">My Demo</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Top Message -->
+  <div class="text-center mt-4">
+    <p class="text-muted"><strong>Note:</strong> Charts and test results are currently under development.</p>
+  </div>
+
+  <!-- Chart Container -->
+  <div class="chart-container">
+    <canvas id="testChart"></canvas>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>UI Automation (Passed/Failed)</th>
+        <th>Backend (Passed/Failed)</th>
+        <th>Status</th>
+        <th>Duration</th>
+        <th>Last Run</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Login</td>
+        <td>5 / 1</td>
+        <td>3 / 1</td>
+        <td>Passed</td>
+        <td>0.12s</td>
+        <td>Jan 31, 2025</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <div class="footer">
+    <a href="https://www.linkedin.com/in/dabbassian/" target="_blank" title="LinkedIn">
+      <i class="bi bi-linkedin"></i>
+    </a>
+    <a href="https://github.com/dastan96" target="_blank" title="GitHub">
+      <i class="bi bi-github"></i>
+    </a>
+  </div>
+
+  <!-- Custom JavaScript -->
+  <script src="/static/js/dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+# Python cache files
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Environment files
+*.env
+
+# MacOS metadata
+.DS_Store
+
+# Ignore test folders if you don’t want to include them
+# Tests/
+# postman/
+
+# IDE configurations (optional)
+.vscode/

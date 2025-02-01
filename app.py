@@ -1,90 +1,77 @@
 from flask import Flask, jsonify, request, render_template, redirect
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Mock user data
-users = {"testuser": "password123"}  # A dictionary to store username-password pairs
+users = {
+    "guest_user": "secret_pass123",
+    "automation_user1": "secret_pass123",
+    "automation_user2": "secret_pass123",
+    "error_user": "secret_pass123"
+}
 
+# Home Route
 @app.route('/')
 def home():
-    return "Welcome to the Login App! Go to /login to log in or /register to register."
+    return "Welcome to the Login App! Go to /login to log in."
 
 # Login Route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.is_json:
-            data = request.get_json()
-        else:
-            data = request.form
+        data = request.form
 
         username = data.get('username')
         password = data.get('password')
 
-        # Check for missing fields
-        if not username:
-            return jsonify({"error": "Username is a required field"}), 400
-        if not password:
-            return jsonify({"error": "Password is a required field"}), 400
-
         # Validate credentials
-        if username in users and users[username] == password:
-            return jsonify({
-                "message": "Login successful",
-                "username": username
-            }), 200
+        if not username or not password:
+            error_message = "Invalid username or password, please use any of the given usernames and passwords."
+            return render_template('login.html', error=error_message)
+
+        if users.get(username) == password:
+            return redirect('/welcome')
         else:
-            return jsonify({"error": "Invalid credentials. Try again."}), 401
+            error_message = "Invalid username or password, please use any of the given usernames and passwords."
+            return render_template('login.html', error=error_message)
 
     return render_template('login.html')
 
-# Register Route
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        data = request.get_json()  # Get JSON data from the request
-        if not data:
-            return jsonify({"error": "Invalid or missing JSON payload"}), 400
-
-        username = data.get('username')
-        password = data.get('password')
-        confirm_password = data.get('confirm_password')
-
-        # Check for missing fields
-        if not username:
-            return jsonify({"error": "Username is a required field"}), 400
-        if not password:
-            return jsonify({"error": "Password is a required field"}), 400
-        if not confirm_password:
-            return jsonify({"error": "Confirm password is a required field"}), 400
-
-        # Validate inputs
-        if password != confirm_password:  # Check if passwords match
-            return jsonify({"error": "Passwords do not match. Try again."}), 400
-
-        if username in users:  # Check if the username already exists
-            return jsonify({"error": "Username already exists. Choose another."}), 400
-
-        # Add the new user to the dictionary
-        users[username] = password
-        return jsonify({"message": "User registered successfully"}), 201
-
-    return render_template('register.html')
 
 # Welcome Route
 @app.route('/welcome')
 def welcome():
-    username = request.args.get('user', 'Guest')  # Get username from query parameters
-    return jsonify({
-        "message": f"Welcome to My Test, {username}!",
-        "info": "This is the welcome page."
-    }), 200
+    # Example data (replace with real test results dynamically)
+    test_results = {
+        "ui_passed": 5,
+        "ui_failed": 1,
+        "backend_passed": 3,
+        "backend_failed": 1,
+        "status": "Passed",
+        "duration": "0.12s",
+        "last_run": "Jan 31, 2025"
+    }
+    return render_template('welcome.html', results=test_results)
+
+
+# Logout Route
+@app.route('/logout')
+def logout():
+    return redirect('/login')  # Redirect to the login page
+
+
+# About Route
+@app.route('/about')
+def about():
+    return "This is a demo dashboard for showcasing test results."
+
 
 if __name__ == '__main__':
     # Use the port provided by Render during deployment
     import os
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001))
     app.run(host='0.0.0.0', port=port, debug=True)
 
 # Alias Flask app for Gunicorn
 application = app
+app.logger.info(f"Static folder: {app.static_folder}")
