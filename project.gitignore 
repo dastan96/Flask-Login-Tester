@@ -11,9 +11,11 @@ venv/
 # MacOS metadata
 .DS_Store
 
-# Ignore test folders if you don’t want to include them
-# Tests/
-# postman/
+# Logs and Reports
+*.log
+reports/
+report.json
 
-# IDE configurations (optional)
-.vscode/
+# Database
+*.db
+instance/

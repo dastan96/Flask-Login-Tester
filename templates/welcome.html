@@ -76,13 +76,16 @@
 
   <!-- Top Message -->
   <div class="text-center mt-4">
-    <p class="text-muted"><strong>Note:</strong> Charts and test results are currently under development.</p>
+    <p class="text-muted"><strong>Note:</strong> Automated tests are scheduled to run every Sunday at midnight.</p>
   </div>
+
+
 
   <!-- Chart Container -->
   <div class="chart-container">
     <canvas id="testChart"></canvas>
-  </div>
+</div>
+
 
   <!-- Table -->
   <table>
@@ -99,14 +102,15 @@
     <tbody>
       <tr>
         <td>Login</td>
-        <td>5 / 1</td>
-        <td>3 / 1</td>
-        <td>Passed</td>
-        <td>0.12s</td>
-        <td>Jan 31, 2025</td>
+        <td>Under Development</td> <!-- Static Text for UI -->
+        <td>{{ results.backend_passed }} / {{ results.backend_failed }}</td>
+        <td>{{ results.status }}</td>
+        <td>{{ results.duration }}</td>
+        <td>{{ results.last_run }}</td>
       </tr>
     </tbody>
   </table>
+  
 
   <!-- Footer -->
   <div class="footer">

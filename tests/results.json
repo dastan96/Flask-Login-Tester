@@ -1,0 +1,9 @@
+{
+    "status": "Passed",
+    "ui_passed": 5,
+    "backend_passed": 3,
+    "ui_failed": 1,
+    "backend_failed": 1,
+    "duration": "0.12s",
+    "last_run": "Jan 31, 2025"
+}
