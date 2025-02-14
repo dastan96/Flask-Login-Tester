@@ -1,0 +1,122 @@
+/* --- Welcome Page Global Styles --- */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Chart container for welcome page */
+.chart-container {
+    position: relative;
+    width: 800px;   /* Increased width */
+    height: 800px;  /* Increased height */
+    margin: auto;
+    display: flex;             /* Center contents */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Table header styling for welcome page */
+.table thead th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* --- Login Page Specific Styles --- */
+/* Only apply these when the body has the class "login-page" */
+body.login-page {
+    background: linear-gradient(135deg, #f5f7fa, #e0eafc);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Login card styling */
+.login-card {
+    max-width: 400px;
+    margin: 5% auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.login-card h2 {
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.login-card p {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.login-card label {
+    font-weight: 500;
+}
+
+/* Custom button for login */
+.btn-custom {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+.btn-custom:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+/* Info section styling on login page */
+.info-section {
+    max-width: 400px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    background-color: #eaf4fc;
+    color: #000;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.info-section h5 {
+    font-weight: 500;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+.info-section ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+.info-section ul li {
+    font-size: 0.95rem;
+    margin: 0.3rem 0;
+}
+.info-section p {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Footer styling (used on login page) */
+.footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #0d6efd;
+    border-radius: 0 0 10px 10px;
+}
+.footer a {
+    color: #ffffff;
+    margin: 0 10px;
+    font-size: 24px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.footer a:hover {
+    color: #d4d4d4;
+}

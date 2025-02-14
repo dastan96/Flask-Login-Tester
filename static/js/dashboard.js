@@ -22,8 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                position: 'top',
-                                labels: { font: { size: 14 } }
+                                display: true,
+                                position: 'bottom',
+                                labels: { font: { size: 20 } }
                             }
                         },
                         cutout: '50%',

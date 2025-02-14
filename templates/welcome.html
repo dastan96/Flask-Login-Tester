@@ -1,64 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Demo Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flask Login Tester</title>
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  
+  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <!-- Chart.js Library -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+  
+  <!-- Favicon (optional to avoid 404 errors) -->
+  <link rel="icon" href="/static/favicon.ico">
+  
   <style>
-    body {
-      background: #f9f9f9;
-      font-family: 'Roboto', sans-serif;
-    }
-    .navbar {
-      background-color: #0d6efd;
-      color: white;
-    }
+    /* Adjust Chart Section */
     .chart-container {
-      max-width: 400px;
-      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 380px; /* Slightly larger */
     }
-    table {
-      width: 80%;
-      margin: 2rem auto;
-      border-collapse: collapse;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
+
+    /* Adjust Read More Button */
+    .read-more-btn {
+      background-color: #3399ff;
+      font-size: 14px;
+      display: block;
+      width: fit-content;
+      margin: 10px auto;
     }
+
+    /* Center Table Text */
     table th, table td {
       text-align: center;
-      padding: 1rem;
-      border: 1px solid #ddd;
-    }
-    table th {
-      background-color: #0d6efd;
-      color: white;
-    }
-    .footer {
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-      background-color: #0d6efd;
-      color: white;
-    }
-    .footer a {
-      color: white;
-      margin: 0 1rem;
-      text-decoration: none;
-      font-size: 1.2rem;
     }
   </style>
 </head>
 <body>
-
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">My Demo</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <a class="navbar-brand" href="#">MyDemo</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -73,57 +63,98 @@
       </div>
     </div>
   </nav>
-
-  <!-- Top Message -->
-  <div class="text-center mt-4">
-    <p class="text-muted"><strong>Note:</strong> Automated tests are scheduled to run every Sunday at midnight.</p>
-  </div>
-
-
-
-  <!-- Chart Container -->
-  <div class="chart-container">
-    <canvas id="testChart"></canvas>
-</div>
-
-
-  <!-- Table -->
-  <table>
-    <thead>
-      <tr>
-        <th>Feature</th>
-        <th>UI Automation (Passed/Failed)</th>
-        <th>Backend (Passed/Failed)</th>
-        <th>Status</th>
-        <th>Duration</th>
-        <th>Last Run</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Login</td>
-        <td>Under Development</td> <!-- Static Text for UI -->
-        <td>{{ results.backend_passed }} / {{ results.backend_failed }}</td>
-        <td>{{ results.status }}</td>
-        <td>{{ results.duration }}</td>
-        <td>{{ results.last_run }}</td>
-      </tr>
-    </tbody>
-  </table>
   
-
-  <!-- Footer -->
-  <div class="footer">
-    <a href="https://www.linkedin.com/in/dabbassian/" target="_blank" title="LinkedIn">
-      <i class="bi bi-linkedin"></i>
-    </a>
-    <a href="https://github.com/dastan96" target="_blank" title="GitHub">
-      <i class="bi bi-github"></i>
-    </a>
+  <!-- Main Content -->
+  <div class="container mt-4">
+    <div class="row">
+      <!-- Left Column: Project Info & Flowchart -->
+      <div class="col-lg-6 text-center mb-4">
+        <h2>Flask Login Tester</h2>
+        <p>
+          A lightweight project showcasing authentication, automated API testing, and CI/CD integrations.
+        </p>
+        <img src="/static/js/images/project_diagram.jpeg" alt="Project Architecture"
+             class="img-fluid rounded mb-3" style="max-width: 400px;">
+        <a href="/about" class="btn btn-primary read-more-btn">Read More</a>
+      </div>
+      
+      <!-- Right Column: Centered Chart -->
+      <div class="col-lg-6 mb-4 text-center">
+        <h4>Test Summary</h4>
+        <div class="chart-container">
+          <canvas id="testChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bottom Section: Centered Table -->
+    <div class="row">
+      <div class="col-12">
+        <h3 class="text-center">Test Results</h3>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>UI Automation (Passed/Failed)</th>
+              <th>Backend (Passed/Failed)</th>
+              <th>Status</th>
+              <th>Duration</th>
+              <th>Last Run</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Login</td>
+              <td>Under Development</td>
+              <td>5 / 0</td>
+              <td>Passed</td>
+              <td>0.0675</td>
+              <td>2025-02-08 18:34:36</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-
-  <!-- Custom JavaScript -->
-  <script src="/static/js/dashboard.js"></script>
+  
+  <!-- Footer with LinkedIn & GitHub Icons -->
+  <footer class="bg-primary text-white py-3 mt-4">
+    <div class="container text-center">
+      <a href="https://www.linkedin.com/in/dabbassian/" class="text-white me-3" target="_blank" title="LinkedIn">
+        <i class="bi bi-linkedin fs-3"></i>
+      </a>
+      <a href="https://github.com/dastan96" class="text-white" target="_blank" title="GitHub">
+        <i class="bi bi-github fs-3"></i>
+      </a>
+    </div>
+  </footer>
+  
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Initialize the doughnut chart
+    const ctx = document.getElementById('testChart').getContext('2d');
+    const testChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Passed', 'Failed', 'Pending'],
+        datasets: [{
+          data: [5, 0, 2],
+          backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

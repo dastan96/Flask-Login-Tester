@@ -3,28 +3,135 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - My Demo Dashboard</title>
+  <title>About - Flask Login Tester</title>
+  
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  
+  <!-- Bootstrap Icons (Added for footer icons) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+  
+  <style>
+    .architecture-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    /* Ensure the flow diagram appears on the left */
+    .architecture-diagram {
+      max-width: 45%;
+      margin-right: 20px;
+    }
+    /* Ensure the code box appears on the right */
+    .code-box {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      max-height: 200px;
+      white-space: pre;
+      font-family: monospace;
+      max-width: 50%;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">My Demo</a>
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/welcome?user=guest_user">Dashboard</a>
-        </li>
+      <a class="navbar-brand" href="/welcome?user=guest_user">Dashboard</a>
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <a class="nav-link" href="/logout">Logout</a>
         </li>
       </ul>
     </div>
   </nav>
+
   <div class="container mt-4">
-    <h1>About</h1>
-    <p>This is a demo dashboard for showcasing test results.</p>
-    <p><strong>Version:</strong> 1.0.0</p>
-    <p><strong>Author:</strong> Dastan</p>
+    <h1>Flask Login Tester - Full Project Summary</h1>
+    
+    <h2>📌 Project Overview</h2>
+    <p>Flask Login Tester is a Flask-based web application designed to:</p>
+    <ul>
+      <li>Provide secure user authentication.</li>
+      <li>Automate API testing using pytest.</li>
+      <li>Store test results dynamically in an SQLite database.</li>
+      <li>Display real-time test results on a visually appealing dashboard.</li>
+      <li>Automate test execution using GitHub Actions every Sunday at midnight.</li>
+    </ul>
+
+    <h2>📂 Project Architecture</h2>
+    <div class="architecture-container">
+      <!-- Flow Diagram on the Left -->
+      <img src="/static/js/images/project_diagram.jpeg" alt="Project Flow Diagram" class="architecture-diagram">
+      
+      <!-- Code Box on the Right -->
+      <pre class="code-box">
+FlaskProject/
+├── .github/workflows/        # GitHub Actions CI/CD Workflow
+│   ├── run-tests.yml         # Automated test execution workflow
+│
+├── instance/                 # SQLite Database Storage
+│   ├── test_results.db       # Stores test execution results
+│
+├── reports/                  # Stores pytest-generated JSON reports
+│   ├── report.json
+│
+├── static/                   # Frontend Static Assets
+│   ├── js/
+│   │   ├── dashboard.js      # Fetches and visualizes test data
+│   ├── css/
+│   │   ├── styles.css        # Custom styles
+│
+├── templates/                # HTML Pages (Login, Welcome, About)
+│   ├── login.html
+│   ├── welcome.html
+│   ├── about.html
+│
+├── tests/                    # Automated Test Scripts
+│   ├── api/
+│   │   ├── api_tests.py      # Pytest API test cases
+│   ├── report.html           # HTML report of test results
+│   ├── results.json          # Test execution summary
+│
+├── util/                     # Utility Functions
+│   ├── utils.py              # Saves test results into SQLite
+│
+├── app.py                    # Flask Application
+├── run_all_tests.py          # Runs all tests & updates DB
+├── requirements.txt          # Python dependencies
+├── README.md                 # Project documentation      
+      </pre>
+    </div>
+
+    <h2>🔥 How Everything Works Together</h2>
+    <ol>
+      <li>Users log in via <code>login.html</code> (Flask authentication).</li>
+      <li>API tests execute (<code>pytest</code> runs via <code>run_all_tests.py</code>).</li>
+      <li>Results are extracted (<code>report.json → SQLite DB</code>).</li>
+      <li>Dashboard (<code>welcome.html</code>) displays real-time results using <code>dashboard.js</code>.</li>
+      <li>GitHub Actions triggers automated test execution weekly (CI/CD pipeline).</li>
+    </ol>
   </div>
+
+  <!-- Footer with LinkedIn & GitHub Icons -->
+  <footer class="bg-primary text-white py-3 mt-4">
+    <div class="container text-center">
+      <a href="https://www.linkedin.com/in/dabbassian/" class="text-white me-3" target="_blank" title="LinkedIn">
+        <i class="bi bi-linkedin fs-3"></i>
+      </a>
+      <a href="https://github.com/dastan96" class="text-white" target="_blank" title="GitHub">
+        <i class="bi bi-github fs-3"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
