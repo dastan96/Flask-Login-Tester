@@ -16,68 +16,52 @@
   
   <!-- Favicon (optional to avoid 404 errors) -->
   <link rel="icon" href="/static/favicon.ico">
-  
-  <style>
-    /* Adjust Chart Section */
-    .chart-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 380px; /* Slightly larger */
-    }
-
-    /* Adjust Read More Button */
-    .read-more-btn {
-      background-color: #3399ff;
-      font-size: 14px;
-      display: block;
-      width: fit-content;
-      margin: 10px auto;
-    }
-
-    /* Center Table Text */
-    table th, table td {
-      text-align: center;
-    }
-  </style>
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- Navbar (with .container so content is centered, but the nav items remain on the left) -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">MyDemo</a>
+    <div class="container">
+      <!-- Brand on the far left -->
+      <a class="navbar-brand" href="/welcome">MyDemo</a>
+      <!-- Toggler for mobile view -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
               aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      <!-- Nav items stay left; no ms-auto class -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link" href="/test-plan">Test Plan</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/about">About</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
         </ul>
       </div>
-    </div>
+    </div><!-- /.container -->
   </nav>
   
   <!-- Main Content -->
-  <div class="container mt-4">
+  <div class="container my-4">
+    <!-- Row for the "Flask Login Tester" info and the chart -->
     <div class="row">
-      <!-- Left Column: Project Info & Flowchart -->
+      <!-- Left Column: Project Info -->
       <div class="col-lg-6 text-center mb-4">
         <h2>Flask Login Tester</h2>
         <p>
           A lightweight project showcasing authentication, automated API testing, and CI/CD integrations.
         </p>
-        <img src="/static/js/images/project_diagram.jpeg" alt="Project Architecture"
-             class="img-fluid rounded mb-3" style="max-width: 400px;">
+        <img src="/static/js/images/project_diagram.jpeg" 
+             alt="Project Architecture" 
+             class="img-fluid rounded mb-3" 
+             style="max-width: 400px;">
         <a href="/about" class="btn btn-primary read-more-btn">Read More</a>
       </div>
-      
+
       <!-- Right Column: Centered Chart -->
       <div class="col-lg-6 mb-4 text-center">
         <h4>Test Summary</h4>
@@ -85,9 +69,9 @@
           <canvas id="testChart"></canvas>
         </div>
       </div>
-    </div>
+    </div><!-- /.row -->
     
-    <!-- Bottom Section: Centered Table -->
+    <!-- Test Results Table -->
     <div class="row">
       <div class="col-12">
         <h3 class="text-center">Test Results</h3>
@@ -96,28 +80,19 @@
             <tr>
               <th>Feature</th>
               <th>UI Automation (Passed/Failed)</th>
-              <th>Backend (Passed/Failed)</th>
-              <th>Status</th>
-              <th>Duration</th>
+              <th>API Tests (Passed/Failed)</th>
               <th>Last Run</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>Login</td>
-              <td>Under Development</td>
-              <td>5 / 0</td>
-              <td>Passed</td>
-              <td>0.0675</td>
-              <td>2025-02-08 18:34:36</td>
-            </tr>
+          <tbody id="apiTestBody">
+            <!-- Dynamic rows inserted by dashboard.js -->
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
+    </div><!-- /.row -->
+  </div><!-- /.container -->
   
-  <!-- Footer with LinkedIn & GitHub Icons -->
+  <!-- Footer (with a full-width bg, but content centered via .container) -->
   <footer class="bg-primary text-white py-3 mt-4">
     <div class="container text-center">
       <a href="https://www.linkedin.com/in/dabbassian/" class="text-white me-3" target="_blank" title="LinkedIn">
@@ -133,28 +108,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // Initialize the doughnut chart
-    const ctx = document.getElementById('testChart').getContext('2d');
-    const testChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Passed', 'Failed', 'Pending'],
-        datasets: [{
-          data: [5, 0, 2],
-          backgroundColor: ['#28a745', '#dc3545', '#ffc107']
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: true
-          }
-        }
-      }
-    });
-  </script>
+  <!-- Custom JS: Dashboard -->
+  <script src="/static/js/dashboard.js"></script>
 </body>
 </html>

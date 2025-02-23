@@ -14,6 +14,8 @@ if not os.path.exists(app.instance_path):
 
 db_path = os.path.join(app.instance_path, 'test_results.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
+print("Using database path:", os.path.abspath(db_path))
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -80,41 +82,89 @@ def logout():
 # Welcome Route
 @app.route('/welcome', methods=['GET'])
 def welcome():
-    # Get username from query parameters
     username = request.args.get('user', 'Guest')
 
-    # Query the latest test results from the database.
-    # This assumes that a higher id means a more recent record.
-    latest_result = TestResults.query.order_by(TestResults.id.desc()).first()
-
-    if latest_result:
-        test_results = {
-            "ui_passed": latest_result.ui_passed,
-            "ui_failed": latest_result.ui_failed,
-            "backend_passed": latest_result.backend_passed,
-            "backend_failed": latest_result.backend_failed,
-            "status": latest_result.status,
-            "duration": latest_result.duration,
-            "last_run": latest_result.last_run
-        }
-    else:
-        # Provide default test results if the database is empty
-        test_results = {
-            "ui_passed": 0,
-            "ui_failed": 0,
-            "backend_passed": 0,
-            "backend_failed": 0,
-            "status": "Not Run",
-            "duration": "N/A",
-            "last_run": "N/A"
-        }
-
-    # **API Request Handling**
+    # If this is an API request, return JSON for the latest 5 test results
     if request.args.get("api") == "true":
-        return jsonify(test_results)  # Return data as JSON for API requests
+        # 1) Query only the 5 most recent records, ordered by last_run descending
+        results = (TestResults.query
+                   .order_by(TestResults.last_run.desc())
+                   .limit(5)
+                   .all())
 
-    # **Frontend Handling (Render the page with valid test results)**
-    return render_template('welcome.html', results=test_results, username=username)
+        test_cases = []
+        passed = 0
+        failed = 0
+
+        # 2) Build the test_cases list and count pass/fail
+        for result in results:
+            test_cases.append({
+                "test_id": result.test_id,
+                "test_name": result.test_name,
+                "status": result.status,
+                "duration": result.duration,
+                "last_run": result.last_run
+            })
+            if result.status == "Passed":
+                passed += 1
+            else:
+                failed += 1
+
+        # 3) Summarize the pass/fail for the chart
+        summary = {
+            "backend_passed": passed,
+            "backend_failed": failed,
+            "pending": 2  # For UI tests (if applicable)
+        }
+
+        # 4) Return JSON with both the summary and these 5 test cases
+        return jsonify({
+            "summary": summary,
+            "test_cases": test_cases
+        })
+
+    # Otherwise, render the welcome.html template with the same 5 results
+    else:
+        # Only show 5 records on the HTML version as well
+        results = (TestResults.query
+                   .order_by(TestResults.last_run.desc())
+                   .limit(5)
+                   .all())
+
+        return render_template('welcome.html', test_cases=results, username=username)
+    
+#History Data
+@app.route("/history", methods=["GET"])
+def history():
+    # Group test results by run_id and aggregate counts
+    results = db.session.execute("""
+        SELECT run_id,
+               COUNT(*) AS total,
+               SUM(CASE WHEN status='Passed' THEN 1 ELSE 0 END) AS passed,
+               MAX(last_run) AS date
+        FROM test_results_table
+        GROUP BY run_id
+        ORDER BY date DESC
+        LIMIT 10
+    """).fetchall()
+
+    runs_data = []
+    for row in results:
+        runs_data.append({
+            "run_id": row[0],
+            "total": row[1],
+            "passed": row[2],
+            "date": row[3]  # this should be in a sortable/displayable format, e.g. "YYYY-MM-DD HH:MM:SS"
+        })
+
+    return jsonify({"runs": runs_data})
+
+
+
+#Test Plans
+@app.route('/test-plan', methods=['GET'])
+def test_plan():
+    return render_template('test_plan.html')  # 
 
 
 # About Route
@@ -127,15 +177,15 @@ application = app
 app.logger.info(f"Static folder: {app.static_folder}")
 
 class TestResults(db.Model):
-    __tablename__ = "test_results_table"  
-    id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(20), nullable=False)
-    ui_passed = db.Column(db.Integer, default=0)
-    backend_passed = db.Column(db.Integer, default=0)
-    ui_failed = db.Column(db.Integer, default=0)
-    backend_failed = db.Column(db.Integer, default=0)
-    duration = db.Column(db.String(20), nullable=False)
-    last_run = db.Column(db.String(20), nullable=False)
+    __tablename__ = "test_results_table"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    test_id = db.Column(db.String(20), nullable=False)      # Example: "01.01"
+    test_name = db.Column(db.String(100), nullable=False)     # Example: "Login with valid credentials"
+    status = db.Column(db.String(20), nullable=False)         # "Passed" or "Failed"
+    duration = db.Column(db.String(20), nullable=False)       # Example: "0.11s"
+    last_run = db.Column(db.String(50), nullable=False)       # Timestamp of last execution
+
 
 
 if __name__ == '__main__':

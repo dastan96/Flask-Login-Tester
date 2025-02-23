@@ -13,7 +13,7 @@
   
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/static/css/styles.css">
-  
+
   <style>
     .architecture-container {
       display: flex;
@@ -21,12 +21,10 @@
       align-items: flex-start;
       flex-wrap: wrap;
     }
-    /* Ensure the flow diagram appears on the left */
     .architecture-diagram {
       max-width: 45%;
       margin-right: 20px;
     }
-    /* Ensure the code box appears on the right */
     .code-box {
       background-color: #1e1e1e;
       color: #d4d4d4;
@@ -41,17 +39,34 @@
   </style>
 </head>
 <body>
+  <!-- Navbar with brand + nav items all left-aligned -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/welcome?user=guest_user">Dashboard</a>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
-        </li>
-      </ul>
+    <div class="container">
+      <!-- Brand -->
+      <a class="navbar-brand" href="/welcome">MyDemo</a>
+      <!-- Toggler for mobile view -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Nav items directly next to brand (no ms-auto) -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav"><!-- Left aligned by default -->
+          <li class="nav-item">
+            <a class="nav-link" href="/test-plan">Test Plan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 
+  <!-- Main Content (centered in container) -->
   <div class="container mt-4">
     <h1>Flask Login Tester - Full Project Summary</h1>
     
@@ -117,9 +132,14 @@ FlaskProject/
       <li>Dashboard (<code>welcome.html</code>) displays real-time results using <code>dashboard.js</code>.</li>
       <li>GitHub Actions triggers automated test execution weekly (CI/CD pipeline).</li>
     </ol>
+    
+    <!-- Test Plan Button, if desired -->
+    <div class="text-center">
+      <a href="/test-plan" class="btn btn-primary test-plan-btn">View Test Plan</a>
+    </div>
   </div>
 
-  <!-- Footer with LinkedIn & GitHub Icons -->
+  <!-- Footer (full-width bg, container for centering) -->
   <footer class="bg-primary text-white py-3 mt-4">
     <div class="container text-center">
       <a href="https://www.linkedin.com/in/dabbassian/" class="text-white me-3" target="_blank" title="LinkedIn">

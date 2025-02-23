@@ -1,17 +1,38 @@
-/* --- Welcome Page Global Styles --- */
+/* --- Global Styles --- */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     color: #333;
+    margin: 0; /* ensure no default body margin/padding */
+    padding: 0;
+}
+
+/* Make sure .container doesn't conflict with other pages */
+.container {
+    max-width: 1200px;
+    margin: 0 auto; /* center the container on large screens */
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Navbar Tweaks */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+/* Footer Tweaks */
+footer.bg-primary {
+    /* (No extra styles specified here in your original file) */
 }
 
 /* Chart container for welcome page */
 .chart-container {
-    position: relative;
-    width: 800px;   /* Increased width */
-    height: 800px;  /* Increased height */
-    margin: auto;
-    display: flex;             /* Center contents */
+    max-width: 600px; /* Instead of fixed 800px */
+    width: 100%;
+    height: auto;
+    margin: 0 auto;   /* center the chart horizontally */
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -20,12 +41,24 @@ body {
 .chart-container canvas {
     width: 100% !important;
     height: 100% !important;
+    max-height: 400px; /* optional max-height for responsiveness */
 }
 
 /* Table header styling for welcome page */
 .table thead th {
     background-color: #007bff;
     color: #fff;
+}
+
+/* Adjust .read-more-btn if needed */
+.read-more-btn {
+    background-color: #3399ff;
+    font-size: 14px;
+    display: block;
+    width: fit-content;
+    margin: 10px auto;
+    padding: 8px 16px;
+    border-radius: 4px;
 }
 
 /* --- Login Page Specific Styles --- */
@@ -118,5 +151,97 @@ body.login-page {
     transition: color 0.3s;
 }
 .footer a:hover {
+    color: #d4d4d4;
+}
+
+/* --- Folder and Test Case Styling --- */
+.folder {
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.folder:hover {
+    background-color: #e2e6ea;
+}
+.folder.open {
+    color: #0d6efd;
+    background-color: #e7f1ff;
+}
+.folder .arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    margin-right: 5px;
+}
+.folder, .test-title {
+    cursor: pointer; 
+}
+
+/* Test case elements: add subtle background and border for readability */
+.test-case {
+    margin: 5px 0;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.test-case:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.01);
+}
+
+/* Test title adjustments */
+.test-title {
+    font-weight: 500;
+}
+
+/* --- Modal Enhancements --- */
+.modal-card {
+    animation: fadeInModal 0.3s;
+}
+@keyframes fadeInModal {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.modal-title-bold {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.modal-body {
+    background-color: #fafafa;
+    padding: 20px;
+}
+.modal-section {
+    margin-bottom: 15px;
+}
+.modal-section i {
+    margin-right: 5px;
+}
+.steps-section {
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* --- Footer Enhancements --- */
+.footer-custom {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #0d6efd;
+    border-radius: 0 0 10px 10px;
+}
+.footer-custom a {
+    color: #ffffff;
+    margin: 0 15px;
+    font-size: 28px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.footer-custom a:hover {
     color: #d4d4d4;
 }
