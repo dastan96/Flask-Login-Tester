@@ -49,24 +49,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
         // Populate the test results table dynamically
-        if (testBody && data.test_cases) {
-          testBody.innerHTML = ""; // Clear existing rows
-  
-          data.test_cases.forEach(test => {
-            let resultIcon = test.status === "Passed" ? "✅" : "❌";
-            // Combine test_id and test_name into one friendly string:
-            const featureDisplay = `${test.test_id}: ${test.test_name}`;
-            let tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${featureDisplay}</td>
-              <td>Under Development</td>
-              <td>${test.status} ${resultIcon}</td>
-              <td>${test.last_run}</td>
-            `;
-            testBody.appendChild(tr);
-          });
-        }
-      })
-      .catch(error => console.error("Error fetching API data:", error));
-  });
-  
+       if (testBody && data.test_cases) {
+        testBody.innerHTML = ""; // Clear existing rows
+
+        data.test_cases.forEach(test => {
+          // Make only the test_id clickable (linking to /test-plan)
+          const featureDisplay = `
+            <a href="/test-plan">
+              ${test.test_id}
+            </a>: ${test.test_name}
+          `;
+          
+          const resultIcon = test.status === "Passed" ? "✅" : "❌";
+          
+          let tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${featureDisplay}</td>
+            <td>Under Development</td>
+            <td>${test.status} ${resultIcon}</td>
+            <td>${test.last_run}</td>
+          `;
+          testBody.appendChild(tr);
+        });
+      }
+    })
+    .catch(error => console.error("Error fetching API data:", error));
+});

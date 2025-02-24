@@ -33,6 +33,9 @@ def process_test_name(nodeid):
             return friendly_name
     return test_name
 
+def generate_run_id():
+    return datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
 def run_all_tests():
     # Remove old report for a fresh run.
     if os.path.exists("report.json"):
@@ -57,17 +60,22 @@ def run_all_tests():
     tests = report.get("tests", [])
     print("Number of tests found:", len(tests))
     
+    # Generate a unique run_id for this test run.
+    run_id = generate_run_id()
+    
     for test in tests:
         nodeid = test["nodeid"]
         test_id = extract_numeric_id(nodeid)
         friendly_name = process_test_name(nodeid)
         status = "Passed" if test.get("outcome") == "passed" else "Failed"
         print("Saving test:", f"'{test_id}'", "| Friendly Name:", friendly_name, "| Status:", status)
+        # Pass run_id along with the other parameters.
         save_individual_test_result(
             test_id=test_id,         # e.g. "01.01"
             test_name=friendly_name, # e.g. "test_api_login_valid_credentials"
             status=status,
-            duration="0.00s"
+            duration="0.00s",
+            run_id=run_id            # New parameter to group this run
         )
 
     print("All test results saved successfully.")

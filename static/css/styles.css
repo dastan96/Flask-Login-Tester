@@ -245,3 +245,8 @@ body.login-page {
 .footer-custom a:hover {
     color: #d4d4d4;
 }
+
+.table.table-bordered.text-center.align-middle th,
+.table.table-bordered.text-center.align-middle td {
+  vertical-align: middle !important;
+}

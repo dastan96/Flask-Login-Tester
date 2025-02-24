@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 from flask import redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text 
 import os
 import json
 import datetime
@@ -137,7 +138,7 @@ def welcome():
 @app.route("/history", methods=["GET"])
 def history():
     # Group test results by run_id and aggregate counts
-    results = db.session.execute("""
+    results = db.session.execute(text("""
         SELECT run_id,
                COUNT(*) AS total,
                SUM(CASE WHEN status='Passed' THEN 1 ELSE 0 END) AS passed,
@@ -146,7 +147,7 @@ def history():
         GROUP BY run_id
         ORDER BY date DESC
         LIMIT 10
-    """).fetchall()
+    """)).fetchall()
 
     runs_data = []
     for row in results:
@@ -185,6 +186,7 @@ class TestResults(db.Model):
     status = db.Column(db.String(20), nullable=False)         # "Passed" or "Failed"
     duration = db.Column(db.String(20), nullable=False)       # Example: "0.11s"
     last_run = db.Column(db.String(50), nullable=False)       # Timestamp of last execution
+    run_id = db.Column(db.String(50), nullable=True)          # Model ID
 
 
 
