@@ -29,10 +29,11 @@ users = {
     "error_user": "secret_pass123"
 }
 
-# Home Route
-@app.route('/')
-def home():
-    return "Welcome to the Login App! Go to /login to log in."
+def get_recent_test_results():
+    return (TestResults.query
+            .order_by(TestResults.last_run.desc())
+            .limit(5)
+            .all())
 
 # Login Route
 @app.route('/login', methods=['GET', 'POST'])
@@ -65,8 +66,7 @@ def login():
                     "message": "Login successful",
                     "username": username
                 }), 200
-            # Redirect to the welcome route with the username as a query parameter
-            return redirect(url_for('welcome', user=username))
+            return render_template('login.html', success="Login successful")
 
         if request.is_json:
             return jsonify({"error": "Invalid credentials. Try again."}), 401
@@ -81,17 +81,18 @@ def logout():
     return redirect(url_for('login'))
 
 # Welcome Route
+@app.route('/', methods=['GET'])
 @app.route('/welcome', methods=['GET'])
 def welcome():
+    if request.path == "/welcome" and request.args.get("api") != "true":
+        return redirect("/")
+
     username = request.args.get('user', 'Guest')
 
     # If this is an API request, return JSON for the latest 5 test results
     if request.args.get("api") == "true":
         # 1) Query only the 5 most recent records, ordered by last_run descending
-        results = (TestResults.query
-                   .order_by(TestResults.last_run.desc())
-                   .limit(5)
-                   .all())
+        results = get_recent_test_results()
 
         test_cases = []
         passed = 0
@@ -127,10 +128,7 @@ def welcome():
     # Otherwise, render the welcome.html template with the same 5 results
     else:
         # Only show 5 records on the HTML version as well
-        results = (TestResults.query
-                   .order_by(TestResults.last_run.desc())
-                   .limit(5)
-                   .all())
+        results = get_recent_test_results()
 
         return render_template('welcome.html', test_cases=results, username=username)
     
