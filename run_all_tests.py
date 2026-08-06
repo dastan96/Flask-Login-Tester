@@ -8,7 +8,7 @@ def extract_numeric_id(nodeid):
     """
     Extracts the numeric portion from a nodeid.
     For example, given:
-      "tests/api/api_tests.py::test_api_01_01_login_valid_credentials"
+      "tests/api/test_login_api.py::test_api_01_01_login_valid_credentials"
     it returns: "01.01"
     """
     test_name = nodeid.split("::")[-1]  # e.g. "test_api_01_01_login_valid_credentials"
@@ -21,7 +21,7 @@ def process_test_name(nodeid):
     """
     Processes the raw function name by removing the numeric portion.
     For example, given:
-      "tests/api/api_tests.py::test_api_01_01_login_valid_credentials"
+      "tests/api/test_login_api.py::test_api_01_01_login_valid_credentials"
     it returns: "test_api_login_valid_credentials"
     """
     test_name = nodeid.split("::")[-1]  # "test_api_01_01_login_valid_credentials"
@@ -43,7 +43,7 @@ def run_all_tests():
     
     try:
         result = subprocess.run(
-            ["pytest", "tests/api/api_tests.py", "--json-report", "--json-report-file=report.json"],
+            ["pytest", "tests/api/test_login_api.py", "--json-report", "--json-report-file=report.json"],
             capture_output=True, text=True, check=False
         )
     except Exception as e:
