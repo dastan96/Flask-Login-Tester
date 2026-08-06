@@ -2,6 +2,8 @@
 __pycache__/
 *.pyc
 report.json
+public/
+test-results/
 
 
 # Python cache files
