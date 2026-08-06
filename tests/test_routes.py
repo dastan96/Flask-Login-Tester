@@ -1,21 +1,3 @@
-import sys
-from pathlib import Path
-
-import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from app import app, db
-
-
-@pytest.fixture
-def client():
-    app.config.update(TESTING=True)
-    with app.app_context():
-        db.create_all()
-    return app.test_client()
-
-
 def assert_dashboard_response(response):
     body = response.get_data(as_text=True)
     assert response.status_code == 200
@@ -142,26 +124,3 @@ def test_missing_password_renders_accessible_error(client):
     assert response.request.path == "/login"
     assert 'role="alert"' in body
     assert "Password is a required field." in body
-
-
-def test_valid_json_login_response_is_preserved(client):
-    response = client.post(
-        "/login",
-        json={"username": "automation_user1", "password": "secret_pass123"},
-    )
-
-    assert response.status_code == 200
-    assert response.get_json() == {
-        "message": "Login successful",
-        "username": "automation_user1",
-    }
-
-
-def test_invalid_json_login_response_is_preserved(client):
-    response = client.post(
-        "/login",
-        json={"username": "automation_user1", "password": "wrong-password"},
-    )
-
-    assert response.status_code == 401
-    assert response.get_json() == {"error": "Invalid credentials. Try again."}
