@@ -18,12 +18,23 @@ SUITE_DEFINITIONS = [
     },
     {
         "id": "flask_routes",
-        "name": "Flask Routes",
+        "name": "Web Routes",
         "module": "tests.test_routes",
     },
 ]
 
 API_TEST_PATTERN = re.compile(r"^test_api_(\d{2})_(\d{2})_(.+)$")
+ROUTE_TEST_IDS = {
+    "test_get_root_renders_dashboard": "02.01",
+    "test_get_welcome_redirects_to_canonical_dashboard": "02.02",
+    "test_get_welcome_redirect_displays_dashboard": "02.03",
+    "test_get_welcome_api_true_preserves_json_response": "02.04",
+    "test_get_login_includes_public_navigation": "02.05",
+    "test_valid_browser_login_renders_success_on_login": "02.06",
+    "test_invalid_browser_login_renders_accessible_error": "02.07",
+    "test_missing_username_renders_accessible_error": "02.08",
+    "test_missing_password_renders_accessible_error": "02.09",
+}
 
 
 def parse_args():
@@ -94,11 +105,7 @@ def suite_for_classname(classname):
     for suite in SUITE_DEFINITIONS:
         if classname == suite["module"] or classname.startswith(suite["module"] + "."):
             return suite
-    return {
-        "id": "other",
-        "name": "Other",
-        "module": "",
-    }
+    return None
 
 
 def friendly_name_and_id(name):
@@ -107,7 +114,7 @@ def friendly_name_and_id(name):
         return f"{match.group(1)}.{match.group(2)}", match.group(3)
 
     if name.startswith("test_"):
-        return None, name[5:]
+        return ROUTE_TEST_IDS.get(name), name[5:]
 
     return None, name
 
@@ -150,6 +157,9 @@ def normalize(root, args):
         raw_name = testcase.attrib.get("name", "")
         classname = testcase.attrib.get("classname", "")
         suite = suite_for_classname(classname)
+        if suite is None:
+            continue
+
         test_id, friendly_name = friendly_name_and_id(raw_name)
         status = status_for_case(testcase)
         duration = as_float(testcase.attrib.get("time"))
@@ -178,7 +188,7 @@ def normalize(root, args):
             "duration": round(duration, 6),
         })
 
-    total = len(testcases)
+    total = len(tests)
     skipped = sum(1 for test in tests if test["status"] == "skipped")
     failed = sum(1 for test in tests if test["status"] == "failed")
     passed = sum(1 for test in tests if test["status"] == "passed")
@@ -195,7 +205,7 @@ def normalize(root, args):
         "passed": passed,
         "failed": failed,
         "skipped": skipped,
-        "duration": round(total_duration(root, testcases), 6),
+        "duration": round(sum(test["duration"] for test in tests), 6),
         "completed_at": utc_now_iso(),
         "branch": args.branch,
         "commit_sha": args.commit_sha,

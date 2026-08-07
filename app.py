@@ -5,9 +5,18 @@ from sqlalchemy import text
 import os
 import json
 import datetime
+from services.test_results_feed import fetch_latest_results
 
 
 app = Flask(__name__)
+app.config["TEST_RESULTS_FEED_URL"] = os.environ.get(
+    "TEST_RESULTS_FEED_URL",
+    "https://dastan96.github.io/Flask-Login-Tester/latest.json",
+)
+app.config["TEST_RESULTS_PAGE_URL"] = os.environ.get(
+    "TEST_RESULTS_PAGE_URL",
+    "https://dastan96.github.io/Flask-Login-Tester/",
+)
 
 # Database configuration
 if not os.path.exists(app.instance_path):
@@ -157,6 +166,19 @@ def history():
         })
 
     return jsonify({"runs": runs_data})
+
+
+@app.route("/api/test-results/latest", methods=["GET"])
+def latest_test_results():
+    result = fetch_latest_results(app.config["TEST_RESULTS_FEED_URL"])
+    response_body = {
+        "available": result.available,
+        "source": "github_pages",
+        "results_page_url": app.config["TEST_RESULTS_PAGE_URL"],
+        "data": result.data,
+        "error": result.error,
+    }
+    return jsonify(response_body), 200 if result.available else 503
 
 
 
