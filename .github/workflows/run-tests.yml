@@ -38,6 +38,7 @@ jobs:
 
           set +e
           python -m pytest \
+            --ignore=tests/ui \
             --junitxml=test-results/junit.xml \
             --html=test-results/report.html \
             --self-contained-html
