@@ -13,30 +13,6 @@
   
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/static/css/styles.css">
-
-  <style>
-    .architecture-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-    .architecture-diagram {
-      max-width: 45%;
-      margin-right: 20px;
-    }
-    .code-box {
-      background-color: #1e1e1e;
-      color: #d4d4d4;
-      padding: 10px;
-      border-radius: 8px;
-      overflow-x: auto;
-      max-height: 200px;
-      white-space: pre;
-      font-family: monospace;
-      max-width: 50%;
-    }
-  </style>
 </head>
 <body>
   <!-- Navbar with brand + nav items all left-aligned -->
@@ -71,72 +47,69 @@
 
   <!-- Main Content (centered in container) -->
   <div class="container mt-4">
-    <h1>Flask Login Tester - Full Project Summary</h1>
-    
-    <h2>📌 Project Overview</h2>
-    <p>Flask Login Tester is a Flask-based web application designed to:</p>
-    <ul>
-      <li>Provide secure user authentication.</li>
-      <li>Automate API testing using pytest.</li>
-      <li>Store test results dynamically in an SQLite database.</li>
-      <li>Display real-time test results on a visually appealing dashboard.</li>
-      <li>Automate test execution using GitHub Actions every Sunday at midnight.</li>
-    </ul>
+    <h1>About Flask Login Tester</h1>
 
-    <h2>📂 Project Architecture</h2>
-    <div class="architecture-container">
-      <!-- Flow Diagram on the Left -->
-      <img src="/static/js/images/project_diagram.jpeg" alt="Project Flow Diagram" class="architecture-diagram">
-      
-      <!-- Code Box on the Right -->
-      <pre class="code-box">
-FlaskProject/
-├── .github/workflows/        # GitHub Actions CI/CD Workflow
-│   ├── run-tests.yml         # Automated test execution workflow
-│
-├── instance/                 # SQLite Database Storage
-│   ├── test_results.db       # Stores test execution results
-│
-├── reports/                  # Stores pytest-generated JSON reports
-│   ├── report.json
-│
-├── static/                   # Frontend Static Assets
-│   ├── js/
-│   │   ├── dashboard.js      # Fetches and visualizes test data
-│   ├── css/
-│   │   ├── styles.css        # Custom styles
-│
-├── templates/                # HTML Pages (Login, Welcome, About)
-│   ├── login.html
-│   ├── welcome.html
-│   ├── about.html
-│
-├── tests/                    # Automated Test Scripts
-│   ├── api/
-│   │   ├── api_tests.py      # Pytest API test cases
-│   ├── report.html           # HTML report of test results
-│   ├── results.json          # Test execution summary
-│
-├── util/                     # Utility Functions
-│   ├── utils.py              # Saves test results into SQLite
-│
-├── app.py                    # Flask Application
-├── run_all_tests.py          # Runs all tests & updates DB
-├── requirements.txt          # Python dependencies
-├── README.md                 # Project documentation      
-      </pre>
-    </div>
+    <section class="my-4">
+      <h2>Project Overview</h2>
+      <p>
+        Flask Login Tester is a lightweight QA engineering lab demonstrating secure Flask
+        authentication, automated testing, CI execution, and live test-result reporting.
+      </p>
+    </section>
 
-    <h2>🔥 How Everything Works Together</h2>
-    <ol>
-      <li>Users log in via <code>login.html</code> (Flask authentication).</li>
-      <li>API tests execute (<code>pytest</code> runs via <code>run_all_tests.py</code>).</li>
-      <li>Results are extracted (<code>report.json → SQLite DB</code>).</li>
-      <li>Dashboard (<code>welcome.html</code>) displays real-time results using <code>dashboard.js</code>.</li>
-      <li>GitHub Actions triggers automated test execution weekly (CI/CD pipeline).</li>
-    </ol>
-    
-    <!-- Test Plan Button, if desired -->
+    <section class="my-4">
+      <h2>What This Project Demonstrates</h2>
+      <ul>
+        <li>Flask authentication demo</li>
+        <li>pytest API testing</li>
+        <li>Web Routes testing</li>
+        <li>Playwright login UI automation</li>
+        <li>GitHub Actions CI</li>
+        <li>Automated report generation</li>
+        <li>Live QA dashboard</li>
+      </ul>
+    </section>
+
+    <section class="my-4">
+      <h2>Current Test Coverage</h2>
+      <p>The automated suite covers the Login API, Web Routes, and Playwright login UI checks.</p>
+    </section>
+
+    <section class="my-4">
+      <h2>CI And Reporting Flow</h2>
+      <p>
+        GitHub Actions runs pytest and generates JUnit XML plus a pytest HTML report.
+        Raw CI artifacts are retained for 14 days, while sanitized
+        <code>latest.json</code> and <code>index.html</code> files are published through
+        GitHub Pages.
+      </p>
+    </section>
+
+    <section class="my-4">
+      <h2>Dashboard Data Flow</h2>
+      <p>
+        Flask fetches <code>latest.json</code> server-side, exposes the sanitized internal
+        contract through <code>GET /api/test-results/latest</code>, and the dashboard
+        consumes that Flask endpoint. GitHub Pages remains the public reporting source.
+      </p>
+    </section>
+
+    <section class="my-4">
+      <h2>Public Links</h2>
+      <ul>
+        <li><a href="https://qa.datlas.me">https://qa.datlas.me</a></li>
+        <li><a href="https://dastan96.github.io/Flask-Login-Tester/">https://dastan96.github.io/Flask-Login-Tester/</a></li>
+      </ul>
+    </section>
+
+    <section class="my-4">
+      <h2>Legacy Note</h2>
+      <p>
+        SQLite-based result storage remains in the repository for backward compatibility,
+        but it is no longer the active dashboard data source.
+      </p>
+    </section>
+
     <div class="text-center">
       <a href="/test-plan" class="btn btn-primary test-plan-btn">View Test Plan</a>
     </div>
