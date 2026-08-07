@@ -78,6 +78,43 @@ def test_get_login_includes_public_navigation(client):
     assert_public_nav(body)
 
 
+def test_get_test_plan_uses_canonical_public_navbar(client):
+    response = client.get("/test-plan")
+    body = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert '<nav class="navbar navbar-expand-lg navbar-dark bg-primary">' in body
+    assert '<div class="container">' in body
+    assert '<div class="container-fluid">' not in body
+    assert_public_nav(body)
+
+
+def test_get_about_reflects_current_reporting_architecture(client):
+    response = client.get("/about")
+    body = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert_public_nav(body)
+    for expected in [
+        "Playwright",
+        "JUnit XML",
+        "pytest HTML",
+        "latest.json",
+        "GitHub Pages",
+        "/api/test-results/latest",
+    ]:
+        assert expected in body
+
+    for stale_content in [
+        "SQLite Database Storage",
+        "report.json",
+        "run_all_tests.py",
+        "api_tests.py",
+        "project_diagram.jpeg",
+    ]:
+        assert stale_content not in body
+
+
 def test_valid_browser_login_renders_success_on_login(client):
     response = client.post(
         "/login",
