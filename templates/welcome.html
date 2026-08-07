@@ -48,61 +48,97 @@
     </div><!-- /.container -->
   </nav>
   
-  <!-- Main Content -->
-  <div class="container my-4">
-    <!-- Row for the "Flask Login Tester" info and the chart -->
-    <div class="row">
-      <!-- Left Column: Project Info -->
-      <div class="col-lg-6 text-center mb-4">
-        <h2>Flask Login Tester</h2>
-        <p>
-          A lightweight project showcasing authentication, automated API testing, and CI/CD integrations.
-        </p>
-        <img src="/static/js/images/project_diagram.jpeg" 
-             alt="Project Architecture" 
-             class="img-fluid rounded mb-3" 
-             style="max-width: 400px;">
-        <a href="/about" class="btn btn-primary read-more-btn">Read More</a>
-      </div>
-    <!-- Right Column: Historical and Piechart  -->
-<div class="col-lg-6 mb-4 text-center">
-  <div class="row">
-    <div class="col-12">
-      <!-- Removed the redundant heading -->
-      <div class="chart-container" style="min-height: 400px;">
-        <canvas id="historyChart"></canvas>
-      </div>
+  <main class="container my-4">
+    <div id="dashboardLoading" class="alert alert-info" role="status" aria-live="polite">
+      Loading latest CI test results...
     </div>
-  </div>
-  <div class="row mt-4">
-    <div class="col-12">
-      <h4>Test Summary</h4>
-      <div class="chart-container" style="min-height: 400px;">
-        <canvas id="testChart"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Test Results  -->
-<div class="row">
-  <div class="col-12">
-    <h3 class="text-center">Test Results</h3>
-    <table class="table table-bordered text-center align-middle">
-      <thead>
-        <tr>
-          <th>Test Cases</th>
-          <th>UI Automation (Passed/Failed)</th>
-          <th>API Tests (Passed/Failed)</th>
-          <th>Last Run</th>
-        </tr>
-      </thead>
-      <tbody id="apiTestBody">
-        <!-- Dynamic rows inserted by dashboard.js -->
-      </tbody>
-    </table>
-  </div>
-</div>
+    <div id="dashboardUnavailable" class="alert alert-warning d-none" role="alert">
+      Latest test results are temporarily unavailable.
+    </div>
+
+    <section id="dashboardContent" class="d-none">
+      <div class="text-center mb-4">
+        <h3 class="mb-1">Latest CI Test Results</h3>
+        <p class="text-muted mb-2" id="dashboardMetadata"></p>
+        <div id="dashboardLinks" class="d-flex flex-wrap justify-content-center gap-2"></div>
+      </div>
+
+      <div class="row g-3 justify-content-center mb-4 text-center" id="dashboardSummary">
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Status</div>
+            <div class="fs-4 fw-bold" id="summaryStatus"></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Total</div>
+            <div class="fs-4 fw-bold" id="summaryTotal"></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Passed</div>
+            <div class="fs-4 fw-bold text-success" id="summaryPassed"></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Failed</div>
+            <div class="fs-4 fw-bold text-danger" id="summaryFailed"></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Skipped</div>
+            <div class="fs-4 fw-bold text-warning" id="summarySkipped"></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+          <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Duration</div>
+            <div class="fs-4 fw-bold" id="summaryDuration"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 justify-content-center align-items-start mb-4">
+        <div class="col-12 col-lg-5">
+          <h4 class="text-center">Test Summary</h4>
+          <div class="chart-container" style="min-height: 300px;">
+            <canvas id="testChart"></canvas>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5 text-center">
+          <h4>Suite Summaries</h4>
+          <div id="suiteSummaries" class="row g-3 justify-content-center text-start"></div>
+          <p id="emptySuitesMessage" class="text-muted d-none">No suite summaries are available.</p>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-center">Test Results</h3>
+        <p id="emptyTestsMessage" class="text-muted text-center d-none">No individual test results are available.</p>
+        <div class="table-responsive">
+          <table class="table table-bordered text-center align-middle">
+            <thead>
+              <tr>
+                <th>Test ID</th>
+                <th>Name</th>
+                <th>Suite</th>
+                <th>Status</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="testResultsBody">
+              <!-- Dynamic rows inserted by dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- Footer (with a full-width bg, but content centered via .container) -->
   <footer class="bg-primary text-white py-3 mt-4">
@@ -118,8 +154,6 @@
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Custom JS: History Dashboard -->
-<script src="/static/js/history_dashboard.js"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Custom JS: Dashboard -->

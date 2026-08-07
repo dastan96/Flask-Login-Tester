@@ -1,0 +1,171 @@
+{
+  "branch": "main",
+  "commit_sha": "abc1234567890def",
+  "completed_at": "2026-08-06T23:45:20Z",
+  "duration": 0.013,
+  "failed": 0,
+  "passed": 19,
+  "schema_version": 1,
+  "skipped": 0,
+  "status": "passed",
+  "suites": [
+    {
+      "duration": 0.004,
+      "failed": 0,
+      "id": "login_api",
+      "name": "Login API",
+      "passed": 10,
+      "skipped": 0,
+      "status": "passed",
+      "total": 10
+    },
+    {
+      "duration": 0.009,
+      "failed": 0,
+      "id": "flask_routes",
+      "name": "Web Routes",
+      "passed": 9,
+      "skipped": 0,
+      "status": "passed",
+      "total": 9
+    }
+  ],
+  "tests": [
+    {
+      "duration": 0.004,
+      "id": "01.01",
+      "name": "login_valid_credentials",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.02",
+      "name": "login_unknown_username",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.03",
+      "name": "login_wrong_password",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.04",
+      "name": "login_missing_username",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.05",
+      "name": "login_empty_username",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.06",
+      "name": "login_null_username",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.07",
+      "name": "login_missing_password",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.08",
+      "name": "login_empty_password",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.09",
+      "name": "login_null_password",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.0,
+      "id": "01.10",
+      "name": "login_empty_json_object",
+      "status": "passed",
+      "suite": "Login API"
+    },
+    {
+      "duration": 0.004,
+      "id": "02.01",
+      "name": "get_root_renders_dashboard",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.02",
+      "name": "get_welcome_redirects_to_canonical_dashboard",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.03",
+      "name": "get_welcome_redirect_displays_dashboard",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.04",
+      "name": "get_welcome_api_true_preserves_json_response",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.05",
+      "name": "get_login_includes_public_navigation",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.06",
+      "name": "valid_browser_login_renders_success_on_login",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.0,
+      "id": "02.07",
+      "name": "invalid_browser_login_renders_accessible_error",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.0,
+      "id": "02.08",
+      "name": "missing_username_renders_accessible_error",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.0,
+      "id": "02.09",
+      "name": "missing_password_renders_accessible_error",
+      "status": "passed",
+      "suite": "Web Routes"
+    }
+  ],
+  "total": 19,
+  "trigger": "push",
+  "workflow_run_url": ""
+}
