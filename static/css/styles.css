@@ -218,6 +218,235 @@ body.login-page {
 .modal-section {
     margin-bottom: 15px;
 }
+
+/* --- Test Library Page --- */
+.test-library-page {
+    background-color: #f5f7fb;
+}
+
+.test-library-shell {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.test-library-intro {
+    max-width: 980px;
+    margin: 0 auto 2rem;
+    text-align: left;
+}
+
+.test-library-intro .section-kicker {
+    color: #0d6efd;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.test-library-intro h1 {
+    color: #172033;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.test-library-intro p {
+    color: #5b6472;
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.test-library-suites {
+    display: grid;
+    gap: 1rem;
+    margin: 0 auto;
+    max-width: 980px;
+}
+
+.test-suite-card {
+    background: #ffffff;
+    border: 1px solid #dde4ef;
+    border-radius: 8px;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+}
+
+.suite-toggle {
+    align-items: flex-start;
+    background: transparent;
+    border: 0;
+    color: #172033;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr auto;
+    padding: 1.25rem;
+    text-align: left;
+    width: 100%;
+}
+
+.suite-toggle:hover,
+.suite-toggle:focus {
+    background-color: #f8fbff;
+}
+
+.suite-toggle:focus-visible,
+.test-case-row:focus-visible {
+    outline: 3px solid rgba(13, 110, 253, 0.25);
+    outline-offset: -3px;
+}
+
+.suite-header {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.suite-title {
+    color: #172033;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.suite-id {
+    background: #e7f1ff;
+    border-radius: 999px;
+    color: #0a58ca;
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 2.8rem;
+    padding: 0.22rem 0.55rem;
+    text-align: center;
+}
+
+.suite-count {
+    background: #e7f1ff;
+    border-radius: 999px;
+    color: #0a58ca;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+}
+
+.suite-summary {
+    color: #5b6472;
+    grid-column: 1;
+    line-height: 1.45;
+}
+
+.suite-state {
+    color: #0d6efd;
+    font-size: 0.9rem;
+    font-weight: 700;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    white-space: nowrap;
+}
+
+.suite-panel {
+    border-top: 1px solid #e8edf5;
+    padding: 0.5rem;
+}
+
+.test-case-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.test-case-row {
+    align-items: baseline;
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 8px;
+    color: #1f2937;
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.8rem 0.9rem;
+    text-align: left;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    width: 100%;
+}
+
+.test-case-row:hover,
+.test-case-row:focus {
+    background-color: #f8fbff;
+    border-color: #b9cff3;
+}
+
+.case-id {
+    background: #e7f1ff;
+    border-radius: 999px;
+    color: #0a58ca;
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 3.8rem;
+    padding: 0.22rem 0.55rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.case-title {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.test-case-modal-title {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    line-height: 1.3;
+}
+
+.test-case-modal-title .case-title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+body.test-library-page #testCaseModal .modal-content {
+    border: 0;
+    border-radius: 8px;
+    border-top: 4px solid #0d6efd;
+    overflow: hidden;
+}
+
+body.test-library-page #testCaseModal .modal-header {
+    background-color: #f8fbff;
+    border-bottom: 1px solid #d8e2ef;
+}
+
+body.test-library-page #testCaseModal .modal-body {
+    background-color: #ffffff;
+}
+
+.test-case-modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.test-library-page .modal-section strong {
+    color: #222222;
+}
+
+.test-library-page .modal-section-muted {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+@media (max-width: 575.98px) {
+    .suite-toggle {
+        grid-template-columns: 1fr;
+    }
+
+    .suite-state {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}
 .modal-section i {
     margin-right: 5px;
 }

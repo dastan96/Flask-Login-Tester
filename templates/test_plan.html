@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Plan</title>
+  <title>Test Library</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/static/css/styles.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body class="test-library-page">
   <!-- Navbar (unchanged) -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="/">QA Engineering Lab</a>
+      <a class="navbar-brand" href="/">QA Lab</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
               aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -38,89 +38,53 @@
   </nav>
 
   <!-- Main Content -->
-  <div class="container mt-4">
-    <h2>Test Plan</h2>
-    <p>Below is the structured test plan, organized into categories.</p>
-    
-    <!-- Folder: Features -->
-    <div class="folder" data-target="features">
-      <span class="arrow">▶</span> Features
-    </div>
-    <div id="features" class="ms-3" style="display: none;">
-      <!-- Folder: 01 - Login -->
-      <div class="folder" data-target="login-tests">
-        <span class="arrow">▶</span> 01 - Login
-      </div>
-      <div id="login-tests" class="ms-3" style="display: none;">
-        <!-- Folder: API Tests -->
-        <div class="folder" data-target="api-tests">
-          <span class="arrow">▶</span> API Tests
-        </div>
-        <div id="api-tests" class="ms-3" style="display: none;">
-          <div class="test-case" data-test="T1">
-            <span class="test-title">01.01 - Login with valid credentials</span>
-          </div>
-          <div class="test-case" data-test="T2">
-            <span class="test-title">01.02 - Login with invalid credentials</span>
-          </div>
-          <div class="test-case" data-test="T3">
-            <span class="test-title">01.03 - Login API returns 200 OK</span>
-          </div>
-          <div class="test-case" data-test="T4">
-            <span class="test-title">01.04 - Login API returns error for missing username</span>
-          </div>
-          <div class="test-case" data-test="T5">
-            <span class="test-title">01.05 - Login API returns error for missing password</span>
-          </div>
-        </div>
-        <!-- Folder: UI Tests -->
-        <div class="folder" data-target="ui-tests">
-          <span class="arrow">▶</span> User Interface Tests (Under Development)
-        </div>
-        <div id="ui-tests" class="ms-3" style="display: none;">
-          <p class="text-muted">UI tests are under development. Stay tuned for updates.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <main class="container test-library-shell">
+    <section class="test-library-intro">
+      <p class="section-kicker">QA Test Library</p>
+      <h1>Test Suites</h1>
+      <p>Browse the automated test suites and detailed test cases used to validate the application.</p>
+    </section>
 
-  <!-- Modal for Test Case Details -->
+    <section id="testLibrarySuites" class="test-library-suites" aria-label="Automated test suites"></section>
+  </main>
+
+  <!-- Modal for selected test case details -->
   <div class="modal fade" id="testCaseModal" tabindex="-1" aria-labelledby="testCaseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg"> <!-- Increased width via modal-lg -->
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content modal-card">
         <div class="modal-header">
-          <h5 class="modal-title modal-title-bold" id="testCaseModalLabel">Test Case Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="margin-right: 8px;"></button>
+          <h5 class="modal-title modal-title-bold test-case-modal-title" id="testCaseModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-          <div class="modal-section" style="margin-bottom: 8px;">
+        <div class="modal-body test-case-modal-body">
+          <div class="modal-section">
             <i class="bi bi-check-circle-fill text-success"></i>
-            <strong style="color: #222;">Objective:</strong>
+            <strong>Objective:</strong>
             <span id="modalObjective"></span>
           </div>
-          <div class="modal-section" style="margin-bottom: 8px;">
+          <div class="modal-section">
             <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-            <strong style="color: #222;">Preconditions:</strong>
+            <strong>Preconditions:</strong>
             <span id="modalPreconditions"></span>
           </div>
-          <div class="modal-section" style="margin-bottom: 8px; background-color: #f9f9f9; padding: 8px; border-radius: 4px;">
+          <div class="modal-section modal-section-muted">
             <i class="bi bi-file-earmark-text"></i>
-            <strong style="color: #222;">Test Data:</strong>
+            <strong>Test Data:</strong>
             <span id="modalTestData"></span>
           </div>
-          <div class="modal-section steps-section" style="margin-bottom: 8px; background-color: #f9f9f9; padding: 8px; border-radius: 4px;">
+          <div class="modal-section steps-section modal-section-muted">
             <i class="bi bi-clipboard-check"></i>
-            <strong style="color: #222;">Steps:</strong>
+            <strong>Steps:</strong>
             <ol id="modalSteps"></ol>
           </div>
-          <div class="modal-section" style="margin-bottom: 8px;">
+          <div class="modal-section">
             <i class="bi bi-bullseye"></i>
-            <strong style="color: #222;">Expectation:</strong>
-            <span id="modalExpectation"></span>
+            <strong>Expected Result:</strong>
+            <span id="modalExpectedResult"></span>
           </div>
-          <div class="modal-section" style="margin-bottom: 8px;">
+          <div class="modal-section">
             <i class="bi bi-lock"></i>
-            <strong style="color: #222;">Postconditions:</strong>
+            <strong>Postconditions:</strong>
             <span id="modalPostconditions"></span>
           </div>
         </div>
