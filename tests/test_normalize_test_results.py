@@ -52,6 +52,22 @@ def test_normalize_assigns_stable_flask_route_ids():
 
     web_routes_suite = next(suite for suite in data["suites"] if suite["id"] == "flask_routes")
     assert web_routes_suite["name"] == "Web Routes"
+    assert web_routes_suite["total"] == 11
+
+
+def test_normalize_assigns_continuous_web_route_ids_without_blanks():
+    root = junit_for(("tests.test_routes", name) for name in ROUTE_TEST_IDS)
+
+    data = normalize(root, args())
+
+    web_route_ids = [
+        test["id"]
+        for test in data["tests"]
+        if test["suite"] == "Web Routes"
+    ]
+    assert web_route_ids == [f"02.{number:02d}" for number in range(1, 12)]
+    assert None not in web_route_ids
+    assert "" not in web_route_ids
 
 
 def test_normalize_excludes_unknown_tests_from_public_feed():
