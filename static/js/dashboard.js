@@ -1,7 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
   const state = {
     chart: null,
+    tests: [],
+    showAllTests: false,
   };
+
+  const DEFAULT_VISIBLE_TESTS = 5;
+  const SUITE_CATEGORIES = [
+    { name: 'Login API', aliases: ['Login API'] },
+    { name: 'UI Tests', aliases: ['UI Tests'] },
+    { name: 'Web Routes', aliases: ['Web Routes'] },
+  ];
 
   const elements = {
     loading: document.getElementById('dashboardLoading'),
@@ -19,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     emptySuitesMessage: document.getElementById('emptySuitesMessage'),
     testResultsBody: document.getElementById('testResultsBody'),
     emptyTestsMessage: document.getElementById('emptyTestsMessage'),
+    testCasesToggle: document.getElementById('testCasesToggle'),
     chartCanvas: document.getElementById('testChart'),
   };
 
@@ -172,13 +182,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderSuites(suites) {
     clearElement(elements.suiteSummaries);
-    if (!suites.length) {
+    hide(elements.emptySuitesMessage);
+
+    if (!Array.isArray(suites)) {
+      suites = [];
+    }
+
+    const suitesByName = new Map(suites.map((suite) => [suite.name, suite]));
+    const orderedSuites = SUITE_CATEGORIES.map((category) => ({
+      category,
+      suite: category.aliases.map((name) => suitesByName.get(name)).find(Boolean),
+    }));
+
+    if (!orderedSuites.length) {
       show(elements.emptySuitesMessage);
       return;
     }
 
-    hide(elements.emptySuitesMessage);
-    suites.forEach((suite) => {
+    orderedSuites.forEach(({ category, suite }) => {
       const col = document.createElement('div');
       col.className = 'col-12';
 
@@ -187,7 +208,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const title = document.createElement('div');
       title.className = 'fw-bold';
-      title.textContent = suite.name;
+      title.textContent = category.name;
+
+      card.appendChild(title);
+
+      if (!suite) {
+        const unavailable = document.createElement('div');
+        unavailable.className = 'text-muted small mt-1';
+        unavailable.textContent = 'No results in latest run';
+        card.appendChild(unavailable);
+        col.appendChild(card);
+        elements.suiteSummaries.appendChild(col);
+        return;
+      }
 
       const status = document.createElement('div');
       status.className = statusClass(suite.status);
@@ -201,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
       duration.className = 'text-muted small';
       duration.textContent = formatDuration(suite.duration);
 
-      card.appendChild(title);
       card.appendChild(status);
       card.appendChild(counts);
       card.appendChild(duration);
@@ -216,15 +248,40 @@ document.addEventListener('DOMContentLoaded', () => {
     row.appendChild(cell);
   }
 
+  function updateTestCasesToggle(total) {
+    if (!elements.testCasesToggle) {
+      return;
+    }
+
+    if (total <= DEFAULT_VISIBLE_TESTS) {
+      hide(elements.testCasesToggle);
+      elements.testCasesToggle.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    show(elements.testCasesToggle);
+    elements.testCasesToggle.setAttribute('aria-expanded', state.showAllTests ? 'true' : 'false');
+    elements.testCasesToggle.textContent = state.showAllTests
+      ? 'Show Less ^'
+      : 'Show More v';
+  }
+
   function renderTests(tests) {
     clearElement(elements.testResultsBody);
-    if (!tests.length) {
+    state.tests = Array.isArray(tests) ? tests : [];
+
+    if (!state.tests.length) {
       show(elements.emptyTestsMessage);
+      updateTestCasesToggle(0);
       return;
     }
 
     hide(elements.emptyTestsMessage);
-    tests.forEach((test) => {
+    const visibleTests = state.showAllTests
+      ? state.tests
+      : state.tests.slice(0, DEFAULT_VISIBLE_TESTS);
+
+    visibleTests.forEach((test) => {
       const row = document.createElement('tr');
       appendCell(row, test.id || '');
       appendCell(row, test.name);
@@ -238,6 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
       appendCell(row, formatDuration(test.duration));
       elements.testResultsBody.appendChild(row);
     });
+
+    updateTestCasesToggle(state.tests.length);
   }
 
   function renderAvailable(payload) {
@@ -250,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLinks(payload, data);
     renderChart(data);
     renderSuites(Array.isArray(data.suites) ? data.suites : []);
+    state.showAllTests = false;
     renderTests(Array.isArray(data.tests) ? data.tests : []);
   }
 
@@ -258,9 +318,19 @@ document.addEventListener('DOMContentLoaded', () => {
     hide(elements.content);
     clearChart();
     clearElement(elements.testResultsBody);
+    state.tests = [];
+    state.showAllTests = false;
+    updateTestCasesToggle(0);
     show(elements.emptyTestsMessage);
     setText(elements.unavailable, message || 'Latest test results are temporarily unavailable.');
     show(elements.unavailable);
+  }
+
+  if (elements.testCasesToggle) {
+    elements.testCasesToggle.addEventListener('click', () => {
+      state.showAllTests = !state.showAllTests;
+      renderTests(state.tests);
+    });
   }
 
   fetch('/api/test-results/latest')

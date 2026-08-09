@@ -4,25 +4,28 @@ def assert_dashboard_response(response):
     assert "QA Engineering Lab" in body
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
-    assert 'href="/test-plan">Test Plan</a>' in body
+    assert 'href="/test-plan">Test Library</a>' in body
     assert 'href="/about">About</a>' in body
     assert "Logout" not in body
     assert "MyDemo" not in body
     assert "My Demo" not in body
     assert "Latest CI Test Results" in body
-    assert "Test Results" in body
+    assert "Test Cases" in body
     assert 'id="dashboardLoading"' in body
     assert 'id="dashboardUnavailable"' in body
     assert 'id="dashboardContent"' in body
     assert 'id="suiteSummaries"' in body
     assert 'id="testResultsBody"' in body
+    assert 'id="testCasesToggle"' in body
+    assert 'aria-expanded="false"' in body
+    assert 'aria-controls="testResultsBody"' in body
     assert "/api/test-results/latest" not in body
 
 
 def assert_public_nav(body):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
-    assert 'href="/test-plan">Test Plan</a>' in body
+    assert 'href="/test-plan">Test Library</a>' in body
     assert 'href="/about">About</a>' in body
     assert "Logout" not in body
 
