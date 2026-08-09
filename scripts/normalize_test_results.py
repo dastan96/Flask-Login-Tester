@@ -30,10 +30,12 @@ ROUTE_TEST_IDS = {
     "test_get_welcome_redirect_displays_dashboard": "02.03",
     "test_get_welcome_api_true_preserves_json_response": "02.04",
     "test_get_login_includes_public_navigation": "02.05",
-    "test_valid_browser_login_renders_success_on_login": "02.06",
-    "test_invalid_browser_login_renders_accessible_error": "02.07",
-    "test_missing_username_renders_accessible_error": "02.08",
-    "test_missing_password_renders_accessible_error": "02.09",
+    "test_get_test_plan_uses_canonical_public_navbar": "02.06",
+    "test_get_about_reflects_current_reporting_architecture": "02.07",
+    "test_valid_browser_login_renders_success_on_login": "02.08",
+    "test_invalid_browser_login_renders_accessible_error": "02.09",
+    "test_missing_username_renders_accessible_error": "02.10",
+    "test_missing_password_renders_accessible_error": "02.11",
 }
 
 

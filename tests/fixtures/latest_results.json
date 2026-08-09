@@ -2,9 +2,9 @@
   "branch": "main",
   "commit_sha": "abc1234567890def",
   "completed_at": "2026-08-06T23:45:20Z",
-  "duration": 0.013,
+  "duration": 0.015,
   "failed": 0,
-  "passed": 19,
+  "passed": 21,
   "schema_version": 1,
   "skipped": 0,
   "status": "passed",
@@ -20,14 +20,14 @@
       "total": 10
     },
     {
-      "duration": 0.009,
+      "duration": 0.011,
       "failed": 0,
       "id": "flask_routes",
       "name": "Web Routes",
-      "passed": 9,
+      "passed": 11,
       "skipped": 0,
       "status": "passed",
-      "total": 9
+      "total": 11
     }
   ],
   "tests": [
@@ -139,33 +139,47 @@
     {
       "duration": 0.001,
       "id": "02.06",
+      "name": "get_test_plan_uses_canonical_public_navbar",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.07",
+      "name": "get_about_reflects_current_reporting_architecture",
+      "status": "passed",
+      "suite": "Web Routes"
+    },
+    {
+      "duration": 0.001,
+      "id": "02.08",
       "name": "valid_browser_login_renders_success_on_login",
       "status": "passed",
       "suite": "Web Routes"
     },
     {
       "duration": 0.0,
-      "id": "02.07",
+      "id": "02.09",
       "name": "invalid_browser_login_renders_accessible_error",
       "status": "passed",
       "suite": "Web Routes"
     },
     {
       "duration": 0.0,
-      "id": "02.08",
+      "id": "02.10",
       "name": "missing_username_renders_accessible_error",
       "status": "passed",
       "suite": "Web Routes"
     },
     {
       "duration": 0.0,
-      "id": "02.09",
+      "id": "02.11",
       "name": "missing_password_renders_accessible_error",
       "status": "passed",
       "suite": "Web Routes"
     }
   ],
-  "total": 19,
+  "total": 21,
   "trigger": "push",
   "workflow_run_url": ""
 }
