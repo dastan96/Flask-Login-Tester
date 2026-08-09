@@ -24,7 +24,7 @@ def login_button(page: Page):
 def test_ui_01_login_page_loads(page: Page, login_ui_base_url: str):
     open_login_page(page, login_ui_base_url)
 
-    expect(page.get_by_role("heading", name="QA Engineering Lab")).to_be_visible()
+    expect(page.get_by_role("heading", name="QA Lab")).to_be_visible()
     expect(username_field(page)).to_be_visible()
     expect(password_field(page)).to_be_visible()
     expect(login_button(page)).to_be_visible()

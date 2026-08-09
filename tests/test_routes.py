@@ -1,7 +1,12 @@
+import re
+from pathlib import Path
+
+
 def assert_dashboard_response(response):
     body = response.get_data(as_text=True)
     assert response.status_code == 200
-    assert "QA Engineering Lab" in body
+    assert "QA Lab" in body
+    assert "QA Engineering Lab" not in body
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
@@ -76,7 +81,8 @@ def test_get_login_includes_public_navigation(client):
     body = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "QA Engineering Lab" in body
+    assert "QA Lab" in body
+    assert "QA Engineering Lab" not in body
     assert "Test positive and negative authentication scenarios using the demo credentials below." in body
     assert_public_nav(body)
 
@@ -90,6 +96,37 @@ def test_get_test_plan_uses_canonical_public_navbar(client):
     assert '<div class="container">' in body
     assert '<div class="container-fluid">' not in body
     assert_public_nav(body)
+    assert "Test Suites" in body
+    assert "<h2>Test Plan</h2>" not in body
+    assert "Browse the automated test suites and detailed test cases used to validate the application." in body
+    assert ">Features<" not in body
+    assert "Under Development" not in body
+    assert "Test Case Details" not in body
+    assert "Expected Result:" in body
+    assert "Expectation:" not in body
+
+
+def test_test_library_defines_public_suite_ids_and_dynamic_modal_title():
+    script = Path("static/js/test_plan.js").read_text(encoding="utf-8")
+
+    expected_ids = {
+        *(f"01.{number:02d}" for number in range(1, 11)),
+        *(f"02.{number:02d}" for number in range(1, 12)),
+        *(f"03.{number:02d}" for number in range(1, 6)),
+    }
+    defined_ids = set(re.findall(r'id: "(\d{2}\.\d{2})"', script))
+
+    assert "01 — Login API Tests" in script
+    assert "02 — Flask Route Tests" in script
+    assert "03 — UI Tests" in script
+    assert defined_ids == expected_ids
+    assert "User Interface Tests (Under Development)" not in script
+    assert "Test Case Details" not in script
+    assert "function renderModalTitle(testCase)" in script
+    assert 'id.className = "case-id";' in script
+    assert 'title.className = "case-title";' in script
+    assert "modalTitle.append(id, title);" in script
+    assert "testCase.id} — ${testCase.title}" not in script
 
 
 def test_get_about_reflects_current_reporting_architecture(client):
@@ -138,7 +175,8 @@ def test_valid_browser_login_renders_success_on_login(client):
     assert response.status_code == 200
     assert response.request.path == "/login"
     assert "Location" not in response.headers
-    assert "QA Engineering Lab" in body
+    assert "QA Lab" in body
+    assert "QA Engineering Lab" not in body
     assert 'role="status"' in body
     assert 'aria-live="polite"' in body
     assert "Login successful" in body
