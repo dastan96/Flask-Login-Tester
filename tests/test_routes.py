@@ -105,6 +105,7 @@ def test_get_about_reflects_current_reporting_architecture(client):
         "latest.json",
         "GitHub Pages",
         "/api/test-results/latest",
+        "Flask Route Tests",
     ]:
         assert expected in body
 
@@ -116,6 +117,15 @@ def test_get_about_reflects_current_reporting_architecture(client):
         "project_diagram.jpeg",
     ]:
         assert stale_content not in body
+
+
+def test_dashboard_js_accepts_legacy_web_routes_alias():
+    script = open("static/js/dashboard.js", encoding="utf-8").read()
+
+    assert "Flask Route Tests" in script
+    assert "Web Routes" in script
+    assert "Show More v" not in script
+    assert "Show Less ^" not in script
 
 
 def test_valid_browser_login_renders_success_on_login(client):

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const SUITE_CATEGORIES = [
     { name: 'Login API', aliases: ['Login API'] },
     { name: 'UI Tests', aliases: ['UI Tests'] },
-    { name: 'Web Routes', aliases: ['Web Routes'] },
+    { name: 'Flask Route Tests', aliases: ['Flask Route Tests', 'Web Routes'] },
   ];
 
   const elements = {
@@ -262,8 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
     show(elements.testCasesToggle);
     elements.testCasesToggle.setAttribute('aria-expanded', state.showAllTests ? 'true' : 'false');
     elements.testCasesToggle.textContent = state.showAllTests
-      ? 'Show Less ^'
-      : 'Show More v';
+      ? 'Show Less'
+      : 'Show More';
   }
 
   function renderTests(tests) {

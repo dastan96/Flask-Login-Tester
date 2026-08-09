@@ -17,13 +17,19 @@ SUITE_DEFINITIONS = [
         "module": "tests.api.test_login_api",
     },
     {
+        "id": "ui_tests",
+        "name": "UI Tests",
+        "module": "tests.ui.test_login_ui",
+    },
+    {
         "id": "flask_routes",
-        "name": "Web Routes",
+        "name": "Flask Route Tests",
         "module": "tests.test_routes",
     },
 ]
 
 API_TEST_PATTERN = re.compile(r"^test_api_(\d{2})_(\d{2})_(.+)$")
+UI_TEST_PATTERN = re.compile(r"^test_ui_(\d{2})_(.+)$")
 ROUTE_TEST_IDS = {
     "test_get_root_renders_dashboard": "02.01",
     "test_get_welcome_redirects_to_canonical_dashboard": "02.02",
@@ -43,7 +49,12 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Normalize pytest JUnit XML into a sanitized public results feed."
     )
-    parser.add_argument("--junit", required=True, help="Path to pytest JUnit XML.")
+    parser.add_argument(
+        "--junit",
+        action="append",
+        required=True,
+        help="Path to pytest JUnit XML. May be passed more than once.",
+    )
     parser.add_argument("--out-dir", required=True, help="Directory for public output.")
     parser.add_argument("--branch", default="", help="Branch name to publish.")
     parser.add_argument("--commit-sha", default="", help="Commit SHA to publish.")
@@ -110,10 +121,14 @@ def suite_for_classname(classname):
     return None
 
 
-def friendly_name_and_id(name):
+def friendly_name_and_id(name, suite_id=None):
     match = API_TEST_PATTERN.match(name)
     if match:
         return f"{match.group(1)}.{match.group(2)}", match.group(3)
+
+    match = UI_TEST_PATTERN.match(name)
+    if match:
+        return f"03.{match.group(1)}", match.group(2)
 
     if name.startswith("test_"):
         return ROUTE_TEST_IDS.get(name), name[5:]
@@ -139,8 +154,14 @@ def summarize_suite(suite):
     }
 
 
-def normalize(root, args):
-    testcases = collect_testcases(root)
+def normalize(roots, args):
+    if not isinstance(roots, (list, tuple)):
+        roots = [roots]
+
+    testcases = []
+    for root in roots:
+        testcases.extend(collect_testcases(root))
+
     tests = []
     suite_totals = {
         suite["id"]: {
@@ -162,7 +183,10 @@ def normalize(root, args):
         if suite is None:
             continue
 
-        test_id, friendly_name = friendly_name_and_id(raw_name)
+        test_id, friendly_name = friendly_name_and_id(raw_name, suite["id"])
+        if test_id is None:
+            continue
+
         status = status_for_case(testcase)
         duration = as_float(testcase.attrib.get("time"))
 
@@ -301,7 +325,7 @@ def render_index(data):
   </style>
 </head>
 <body>
-  <h1>Backend Test Results</h1>
+  <h1>Latest Automated Test Results</h1>
   <div class="summary">
     <div><div class="label">Status</div><div class="value {css_class(data['status'])}">{status}</div></div>
     <div><div class="label">Total</div><div class="value">{data['total']}</div></div>
@@ -339,8 +363,8 @@ def render_index(data):
 
 def main():
     args = parse_args()
-    root = load_junit(args.junit)
-    data = normalize(root, args)
+    roots = [load_junit(path) for path in args.junit]
+    data = normalize(roots, args)
 
     out_dir = Path(args.out_dir)
     clean_out_dir(out_dir)
