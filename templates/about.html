@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - Flask Login Tester</title>
+  <title>Architecture - Flask Login Tester</title>
   
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -14,7 +14,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body>
+<body class="about-page">
   <!-- Navbar with brand + nav items all left-aligned -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
@@ -38,82 +38,139 @@
             <a class="nav-link" href="/test-plan">Test Library</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="/about">About</a>
+            <a class="nav-link active" href="/about">Architecture</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Main Content (centered in container) -->
-  <div class="container mt-4">
-    <h1>About Flask Login Tester</h1>
+  <main class="about-shell">
+    <div class="container">
+      <section class="about-hero">
+        <p class="about-kicker">QA LAB ARCHITECTURE</p>
+        <h1>Quality Engineering in Practice</h1>
+        <p>
+          QA Lab is a compact Flask-based portfolio project demonstrating layered automated
+          testing across API, application routes, and browser UI, with CI orchestration,
+          public reporting, and deployment.
+        </p>
+      </section>
 
-    <section class="my-4">
-      <h2>Project Overview</h2>
-      <p>
-        Flask Login Tester is a lightweight QA engineering lab demonstrating secure Flask
-        authentication, automated testing, CI execution, and live test-result reporting.
-      </p>
-    </section>
+      <section class="about-section capabilities-section">
+        <div class="about-section-header">
+          <p class="about-kicker">Capabilities</p>
+          <h2>Quality Engineering Capabilities</h2>
+        </div>
+        <div class="tag-group capability-tags" aria-label="Quality engineering capabilities">
+          <span>API Automation</span>
+          <span>Browser Automation</span>
+          <span>Layered Testing</span>
+          <span>CI/CD</span>
+          <span>Automated Reporting</span>
+        </div>
+        <div class="tag-group tech-tags" aria-label="Technology stack">
+          <span>Python</span>
+          <span>Flask</span>
+          <span>pytest</span>
+          <span>Playwright</span>
+          <span>GitHub Actions</span>
+          <span>GitHub Pages</span>
+          <span>Render</span>
+          <span>Bootstrap</span>
+        </div>
+      </section>
 
-    <section class="my-4">
-      <h2>What This Project Demonstrates</h2>
-      <ul>
-        <li>Flask authentication demo</li>
-        <li>pytest API testing</li>
-        <li>Flask Route Tests</li>
-        <li>Playwright login UI automation</li>
-        <li>GitHub Actions CI</li>
-        <li>Automated report generation</li>
-        <li>Live QA dashboard</li>
-      </ul>
-    </section>
+      <section class="about-section">
+        <div class="about-section-header">
+          <p class="about-kicker">TESTING STRATEGY</p>
+          <h2>Layered Application Coverage</h2>
+        </div>
+        <div class="strategy-grid">
+          <article>
+            <h3>Login API Tests</h3>
+            <p class="strategy-meta">pytest · Flask test client</p>
+            <p>Validates authentication responses, invalid credentials, and request-field validation.</p>
+          </article>
+          <article>
+            <h3>Flask Route Tests</h3>
+            <p class="strategy-meta">pytest · Flask test client</p>
+            <p>Validates routing, redirects, public navigation, rendered states, and browser-form responses.</p>
+          </article>
+          <article>
+            <h3>UI Tests</h3>
+            <p class="strategy-meta">Playwright · Chromium</p>
+            <p>Validates visible login controls, success/error feedback, and native required-field behavior.</p>
+          </article>
+        </div>
+      </section>
 
-    <section class="my-4">
-      <h2>Current Test Coverage</h2>
-      <p>The automated suite covers the Login API, Flask Route Tests, and Playwright login UI checks.</p>
-    </section>
+      <section class="about-section">
+        <div class="about-section-header">
+          <p class="about-kicker">CI &amp; REPORTING FLOW</p>
+          <h2>From Automated Tests to Public Dashboard</h2>
+        </div>
+        <div class="flow-diagram" aria-label="CI and reporting architecture">
+          <div class="flow-row flow-row-split">
+            <div class="flow-node">
+              <strong>Backend pytest job</strong>
+            </div>
+            <div class="flow-node">
+              <strong>Playwright UI job</strong>
+            </div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>aggregate-results</strong>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>latest.json + GitHub Pages results</strong>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>Flask results endpoint</strong>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>QA Lab dashboard</strong>
+            <span>Hosted on Render</span>
+          </div>
+        </div>
+        <p class="flow-caption">
+          Pull requests validate backend, browser, and aggregation jobs; production reporting is published only from main.
+        </p>
+      </section>
 
-    <section class="my-4">
-      <h2>CI And Reporting Flow</h2>
-      <p>
-        GitHub Actions runs pytest and generates JUnit XML plus a pytest HTML report.
-        Raw CI artifacts are retained for 14 days, while sanitized
-        <code>latest.json</code> and <code>index.html</code> files are published through
-        GitHub Pages.
-      </p>
-    </section>
+      <section class="about-section">
+        <div class="about-section-header">
+          <p class="about-kicker">WHY THIS ARCHITECTURE?</p>
+          <h2>Design Decisions</h2>
+        </div>
+        <div class="decision-grid">
+          <article>
+            <h3>Separate test execution</h3>
+            <p>Backend and browser tests run independently for clearer feedback and failure isolation.</p>
+          </article>
+          <article>
+            <h3>One reporting source of truth</h3>
+            <p>Both JUnit outputs are aggregated into one public latest.json result feed.</p>
+          </article>
+          <article>
+            <h3>Sanitized public reporting</h3>
+            <p>The Flask dashboard consumes the published result contract without exposing internal CI artifacts.</p>
+          </article>
+        </div>
+      </section>
 
-    <section class="my-4">
-      <h2>Dashboard Data Flow</h2>
-      <p>
-        Flask fetches <code>latest.json</code> server-side, exposes the sanitized internal
-        contract through <code>GET /api/test-results/latest</code>, and the dashboard
-        consumes that Flask endpoint. GitHub Pages remains the public reporting source.
-      </p>
-    </section>
-
-    <section class="my-4">
-      <h2>Public Links</h2>
-      <ul>
-        <li><a href="https://qa.datlas.me">https://qa.datlas.me</a></li>
-        <li><a href="https://dastan96.github.io/Flask-Login-Tester/">https://dastan96.github.io/Flask-Login-Tester/</a></li>
-      </ul>
-    </section>
-
-    <section class="my-4">
-      <h2>Legacy Note</h2>
-      <p>
-        SQLite-based result storage remains in the repository for backward compatibility,
-        but it is no longer the active dashboard data source.
-      </p>
-    </section>
-
-    <div class="text-center">
-      <a href="/test-plan" class="btn btn-primary test-plan-btn">View Test Plan</a>
+      <section class="about-cta-section">
+        <a class="btn btn-outline-primary about-cta"
+           href="https://github.com/dastan96/Flask-Login-Tester"
+           target="_blank"
+           rel="noopener noreferrer">View GitHub Repository</a>
+      </section>
     </div>
-  </div>
+  </main>
 
   <!-- Footer (full-width bg, container for centering) -->
   <footer class="bg-primary text-white py-3 mt-4">

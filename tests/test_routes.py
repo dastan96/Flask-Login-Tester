@@ -10,7 +10,8 @@ def assert_dashboard_response(response):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
-    assert 'href="/about">About</a>' in body
+    assert 'href="/about">Architecture</a>' in body
+    assert 'href="/about">About</a>' not in body
     assert "Logout" not in body
     assert "MyDemo" not in body
     assert "My Demo" not in body
@@ -31,7 +32,8 @@ def assert_public_nav(body):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
-    assert 'href="/about">About</a>' in body
+    assert 'href="/about">Architecture</a>' in body
+    assert 'href="/about">About</a>' not in body
     assert "Logout" not in body
 
 
@@ -136,17 +138,39 @@ def test_get_about_reflects_current_reporting_architecture(client):
     assert response.status_code == 200
     assert_public_nav(body)
     for expected in [
-        "Playwright",
-        "JUnit XML",
-        "pytest HTML",
+        "QA LAB ARCHITECTURE",
+        "Quality Engineering in Practice",
+        "Quality Engineering Capabilities",
+        "TESTING STRATEGY",
+        "Login API Tests",
+        "pytest · Flask test client",
+        "Flask Route Tests",
+        "UI Tests",
+        "Playwright · Chromium",
+        "Backend pytest job",
+        "Playwright UI job",
+        "aggregate-results",
         "latest.json",
         "GitHub Pages",
-        "/api/test-results/latest",
-        "Flask Route Tests",
+        "Flask results endpoint",
+        "QA Lab dashboard",
+        "Hosted on Render",
+        "Pull requests validate backend, browser, and aggregation jobs; production reporting is published only from main.",
+        "WHY THIS ARCHITECTURE?",
+        "Separate test execution",
+        "One reporting source of truth",
+        "Sanitized public reporting",
+        "View GitHub Repository",
     ]:
         assert expected in body
 
     for stale_content in [
+        'href="/about">About</a>',
+        "What This Demonstrates",
+        "Technology Stack",
+        "View Test Plan",
+        "Legacy Note",
+        "Public Links",
         "SQLite Database Storage",
         "report.json",
         "run_all_tests.py",
