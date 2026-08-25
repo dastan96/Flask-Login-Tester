@@ -25,7 +25,7 @@ def _create_client():
     return OpenAI()
 
 
-def _resolve_model(model):
+def resolve_model(model=None):
     return model or os.environ.get("OPENAI_MODEL") or DEFAULT_MODEL
 
 
@@ -35,7 +35,7 @@ def analyze_context(analysis_context, *, client=None, model=None):
 
     try:
         response = openai_client.responses.create(
-            model=_resolve_model(model),
+            model=resolve_model(model),
             instructions=ai_analysis_contract.STABLE_ANALYSIS_INSTRUCTIONS,
             input=model_input,
             text={
