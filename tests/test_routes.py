@@ -1,6 +1,9 @@
 import re
 from pathlib import Path
 
+import app as app_module
+from services.ai_report_feed_service import AIReportFeedError
+
 
 def assert_dashboard_response(response):
     body = response.get_data(as_text=True)
@@ -243,3 +246,122 @@ def test_missing_password_renders_accessible_error(client):
     assert response.request.path == "/login"
     assert 'role="alert"' in body
     assert "Password is a required field." in body
+
+
+def ai_report_index_payload():
+    return {
+        "report_version": "1.0",
+        "reports": [
+            {
+                "pr_number": 42,
+                "title": "Add AI report feed",
+                "risk_level": "medium",
+                "generated_at": "2026-08-25T12:00:00Z",
+                "model": "gpt-5.6-terra",
+                "prompt_version": "1.0",
+                "report_path": "reports/pr-42.json",
+            }
+        ],
+    }
+
+
+def ai_report_payload():
+    return {
+        "report_version": "1.0",
+        "prompt_version": "1.0",
+        "generated_at": "2026-08-25T12:00:00Z",
+        "model": "gpt-5.6-terra",
+        "source": {"pr_number": 42, "pr_title": "Add AI report feed"},
+        "change_summary": {"files_changed": 2, "additions": 30, "deletions": 5, "total_changes": 35},
+        "analysis": {"risk_level": "medium"},
+    }
+
+
+def test_get_ai_report_index_returns_feed_result_without_openai_key(client, monkeypatch):
+    payload = ai_report_index_payload()
+    calls = []
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    def fetch(base_url):
+        calls.append(base_url)
+        return payload
+
+    monkeypatch.setattr(app_module, "fetch_report_index", fetch)
+
+    response = client.get("/api/ai-reports")
+
+    assert response.status_code == 200
+    assert response.get_json() == {
+        "available": True,
+        "source": "github_raw",
+        "data": payload,
+        "error": None,
+    }
+    assert calls == [app_module.app.config["AI_REPORT_FEED_BASE_URL"]]
+
+
+def test_get_selected_ai_report_returns_feed_result(client, monkeypatch):
+    payload = ai_report_payload()
+    calls = []
+
+    def fetch(pr_number, base_url):
+        calls.append((pr_number, base_url))
+        return payload
+
+    monkeypatch.setattr(app_module, "fetch_ai_report", fetch)
+
+    response = client.get("/api/ai-reports/42")
+
+    assert response.status_code == 200
+    assert response.get_json()["data"] == payload
+    assert calls == [(42, app_module.app.config["AI_REPORT_FEED_BASE_URL"])]
+
+
+def test_get_ai_report_index_returns_safe_unavailable_response(client, monkeypatch):
+    def fail(_base_url):
+        raise AIReportFeedError("feed_unavailable")
+
+    monkeypatch.setattr(app_module, "fetch_report_index", fail)
+
+    response = client.get("/api/ai-reports")
+
+    assert response.status_code == 503
+    assert response.get_json() == {
+        "available": False,
+        "source": "github_raw",
+        "data": None,
+        "error": {
+            "code": "feed_unavailable",
+            "message": "AI reports are not available yet.",
+        },
+    }
+
+
+def test_get_missing_ai_report_returns_safe_not_found_response(client, monkeypatch):
+    def fail(_pr_number, _base_url):
+        raise AIReportFeedError("report_not_found")
+
+    monkeypatch.setattr(app_module, "fetch_ai_report", fail)
+
+    response = client.get("/api/ai-reports/42")
+
+    assert response.status_code == 404
+    assert response.get_json()["error"] == {
+        "code": "report_not_found",
+        "message": "The requested AI report was not found.",
+    }
+
+
+def test_get_malformed_ai_report_returns_safe_upstream_response(client, monkeypatch):
+    def fail(_pr_number, _base_url):
+        raise AIReportFeedError("invalid_report")
+
+    monkeypatch.setattr(app_module, "fetch_ai_report", fail)
+
+    response = client.get("/api/ai-reports/42")
+
+    assert response.status_code == 502
+    assert response.get_json()["error"] == {
+        "code": "invalid_report",
+        "message": "The AI report is not in a supported format.",
+    }

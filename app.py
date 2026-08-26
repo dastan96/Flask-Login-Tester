@@ -6,6 +6,12 @@ import os
 import json
 import datetime
 from services.test_results_feed import fetch_latest_results
+from services.ai_report_feed_service import (
+    AIReportFeedError,
+    DEFAULT_AI_REPORT_BASE_URL,
+    fetch_ai_report,
+    fetch_report_index,
+)
 
 
 app = Flask(__name__)
@@ -16,6 +22,10 @@ app.config["TEST_RESULTS_FEED_URL"] = os.environ.get(
 app.config["TEST_RESULTS_PAGE_URL"] = os.environ.get(
     "TEST_RESULTS_PAGE_URL",
     "https://dastan96.github.io/Flask-Login-Tester/",
+)
+app.config["AI_REPORT_FEED_BASE_URL"] = os.environ.get(
+    "AI_REPORT_FEED_BASE_URL",
+    DEFAULT_AI_REPORT_BASE_URL,
 )
 
 # Database configuration
@@ -179,6 +189,69 @@ def latest_test_results():
         "error": result.error,
     }
     return jsonify(response_body), 200 if result.available else 503
+
+
+AI_REPORT_ERROR_STATUS = {
+    "report_not_found": 404,
+    "invalid_json": 502,
+    "invalid_index": 502,
+    "invalid_report": 502,
+    "feed_unavailable": 503,
+    "upstream_http_error": 503,
+}
+
+
+def ai_report_error_response(error):
+    return jsonify({
+        "available": False,
+        "source": "github_raw",
+        "data": None,
+        "error": {
+            "code": error.code,
+            "message": error.public_message,
+        },
+    }), AI_REPORT_ERROR_STATUS[error.code]
+
+
+@app.route("/api/ai-reports", methods=["GET"])
+def ai_report_index():
+    try:
+        data = fetch_report_index(app.config["AI_REPORT_FEED_BASE_URL"])
+    except AIReportFeedError as error:
+        return ai_report_error_response(error)
+
+    return jsonify({
+        "available": True,
+        "source": "github_raw",
+        "data": data,
+        "error": None,
+    })
+
+
+@app.route("/api/ai-reports/<int:pr_number>", methods=["GET"])
+def ai_report_detail(pr_number):
+    if pr_number <= 0:
+        return jsonify({
+            "available": False,
+            "source": "github_raw",
+            "data": None,
+            "error": {
+                "code": "invalid_pr_number",
+                "message": "Pull Request number must be a positive integer.",
+            },
+        }), 400
+
+    try:
+        data = fetch_ai_report(pr_number, app.config["AI_REPORT_FEED_BASE_URL"])
+    except AIReportFeedError as error:
+        return ai_report_error_response(error)
+
+    return jsonify({
+        "available": True,
+        "source": "github_raw",
+        "data": data,
+        "error": None,
+    })
 
 
 
