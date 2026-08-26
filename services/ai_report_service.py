@@ -108,6 +108,16 @@ def rebuild_report_index(output_dir=DEFAULT_AI_REPORT_DIR):
 
 def _build_report(analysis_context, analysis, *, model, generated_at):
     pull_request = analysis_context["pull_request"]
+    changed_files = [
+        {
+            "filename": changed_file["filename"],
+            "status": changed_file["status"],
+            "additions": changed_file["additions"],
+            "deletions": changed_file["deletions"],
+            "total_changes": changed_file["total_changes"],
+        }
+        for changed_file in analysis_context["changed_files"]
+    ]
     return {
         "report_version": REPORT_VERSION,
         "prompt_version": ai_analysis_contract.PROMPT_VERSION,
@@ -121,6 +131,7 @@ def _build_report(analysis_context, analysis, *, model, generated_at):
             "commit_sha": pull_request["commit_sha"],
         },
         "change_summary": analysis_context["change_summary"],
+        "changed_files": changed_files,
         "analysis": analysis,
     }
 

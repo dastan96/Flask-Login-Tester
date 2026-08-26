@@ -261,6 +261,11 @@ def test_plan():
     return render_template('test_plan.html')  # 
 
 
+@app.route('/ai', methods=['GET'])
+def ai_assisted_qa():
+    return render_template('ai_assisted_qa.html')
+
+
 # About Route
 @app.route('/about', methods=['GET'])
 def about():

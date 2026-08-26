@@ -13,6 +13,7 @@ def assert_dashboard_response(response):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
+    assert 'href="/ai">AI-Assisted QA</a>' in body
     assert 'href="/about">Architecture</a>' in body
     assert 'href="/about">About</a>' not in body
     assert "Logout" not in body
@@ -35,6 +36,7 @@ def assert_public_nav(body):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
+    assert 'href="/ai">AI-Assisted QA</a>' in body
     assert 'href="/about">Architecture</a>' in body
     assert 'href="/about">About</a>' not in body
     assert "Logout" not in body
@@ -117,7 +119,7 @@ def test_test_library_defines_public_suite_ids_and_dynamic_modal_title():
     expected_ids = {
         *(f"01.{number:02d}" for number in range(1, 11)),
         *(f"02.{number:02d}" for number in range(1, 12)),
-        *(f"03.{number:02d}" for number in range(1, 6)),
+        *(f"03.{number:02d}" for number in range(1, 8)),
     }
     defined_ids = set(re.findall(r'id: "(\d{2}\.\d{2})"', script))
 
@@ -132,6 +134,47 @@ def test_test_library_defines_public_suite_ids_and_dynamic_modal_title():
     assert 'title.className = "case-title";' in script
     assert "modalTitle.append(id, title);" in script
     assert "testCase.id} — ${testCase.title}" not in script
+
+
+def test_get_ai_assisted_qa_renders_read_only_report_explorer(client, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "must-not-appear-in-page")
+
+    response = client.get("/ai")
+    body = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert_public_nav(body)
+    for expected in [
+        "Pull Request QA Review",
+        'id="aiReportSelect"',
+        'id="aiReportLoading"',
+        'id="aiReportUnavailable"',
+        'id="aiReportContent"',
+        'role="tablist"',
+        "Overview",
+        "Findings",
+        "Test Impact",
+        "Details",
+        "AI Summary",
+        "Key Findings",
+        "Changed Files",
+        "Full Risk Rationale",
+        "Affected Areas",
+        "Existing Relevant Tests",
+        "Potential Coverage Gaps",
+        "Recommended Tests",
+        "QA Notes",
+        "Analysis Limitations",
+        "Report Metadata",
+        "How This Analysis Works",
+        "/static/js/ai_assisted_qa.js",
+    ]:
+        assert expected in body
+
+    assert "must-not-appear-in-page" not in body
+    assert "OPENAI_API_KEY" not in body
+    assert "Generate AI" not in body
+    assert 'method="POST"' not in body
 
 
 def test_get_about_reflects_current_reporting_architecture(client):

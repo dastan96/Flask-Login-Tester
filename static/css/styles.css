@@ -978,3 +978,695 @@ body.home-page {
         height: 245px;
     }
 }
+
+/* --- AI Pull Request Review Refinement --- */
+body.ai-review-page {
+    background-color: #f4f7fb;
+    color: #1f2933;
+}
+
+.ai-review-page .ai-kicker {
+    color: #0d6efd;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+}
+
+.ai-review-page .ai-wide-container {
+    max-width: 1320px;
+}
+
+.ai-review-page .ai-review-intro {
+    background-color: #ffffff;
+    border-bottom: 1px solid #d8e2ef;
+    padding: 30px 0 26px;
+}
+
+.ai-review-page .ai-review-intro h1 {
+    color: #172033;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.ai-review-page .ai-review-intro p:last-child {
+    color: #52606d;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 830px;
+}
+
+.ai-review-page .ai-report-shell {
+    padding: 26px 0 50px;
+}
+
+.ai-review-page .ai-review-selector {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    max-width: 760px;
+}
+
+.ai-review-page .ai-review-selector label {
+    color: #344054;
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.ai-review-page .ai-review-selector .form-select {
+    border-color: #b8c6d9;
+    border-radius: 6px;
+    min-height: 40px;
+}
+
+.ai-review-page .ai-state-panel {
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #d8e2ef;
+    border-radius: 8px;
+    display: flex;
+    gap: 14px;
+    min-height: 92px;
+    padding: 22px;
+}
+
+.ai-review-page .ai-state-panel h2 {
+    color: #172033;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.ai-review-page .ai-state-unavailable {
+    border-left: 4px solid #d39e00;
+}
+
+.ai-review-page .ai-state-unavailable i {
+    color: #8a6500;
+    font-size: 1.35rem;
+}
+
+.ai-review-page .ai-state-panel > p {
+    margin: 0;
+}
+
+.ai-review-page .pr-review {
+    background-color: #ffffff;
+    border: 1px solid #d8e2ef;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+}
+
+.ai-review-page .pr-review-header {
+    padding: 24px 26px 20px;
+}
+
+.ai-review-page .pr-title-row {
+    align-items: flex-start;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+}
+
+.ai-review-page .pr-number {
+    color: #62748a;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.ai-review-page .pr-title-row h2 {
+    color: #172033;
+    font-size: 1.55rem;
+    font-weight: 700;
+    margin-bottom: 7px;
+    overflow-wrap: anywhere;
+}
+
+.ai-review-page .pr-meta {
+    color: #62748a;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.88rem;
+    gap: 6px;
+    margin: 0;
+}
+
+.ai-review-page .ai-risk-badge {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 0.35rem 0.7rem;
+    white-space: nowrap;
+}
+
+.ai-review-page .ai-risk-low {
+    background-color: #dff4e8;
+    border-color: #a3cfbb;
+    color: #146c43;
+}
+
+.ai-review-page .ai-risk-medium {
+    background-color: #fff3cd;
+    border-color: #ffe69c;
+    color: #755600;
+}
+
+.ai-review-page .ai-risk-high {
+    background-color: #f8d7da;
+    border-color: #f1aeb5;
+    color: #842029;
+}
+
+.ai-review-page .ai-risk-unknown {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #495057;
+}
+
+.ai-review-page .pr-change-stats {
+    align-items: center;
+    border-bottom: 1px solid #e4e9f1;
+    border-top: 1px solid #e4e9f1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 20px 0 16px;
+    padding: 11px 0;
+}
+
+.ai-review-page .pr-change-stats div {
+    align-items: baseline;
+    border-right: 1px solid #e4e9f1;
+    display: flex;
+    gap: 7px;
+    margin-right: 18px;
+    padding-right: 18px;
+}
+
+.ai-review-page .pr-change-stats div:last-child {
+    border-right: 0;
+}
+
+.ai-review-page .pr-change-stats dt {
+    color: #62748a;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.ai-review-page .pr-change-stats dd {
+    color: #172033;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.ai-review-page .pr-review-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.ai-review-page .pr-review-actions .btn {
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+}
+
+.ai-review-page .pr-tabs {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #d8e2ef;
+    border-top: 1px solid #d8e2ef;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 0 20px;
+}
+
+.ai-review-page .pr-tab {
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    color: #52606d;
+    flex: 0 0 auto;
+    font-weight: 600;
+    padding: 13px 15px 11px;
+}
+
+.ai-review-page .pr-tab:hover,
+.ai-review-page .pr-tab:focus {
+    color: #0a58ca;
+}
+
+.ai-review-page .pr-tab:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(13, 110, 253, 0.28);
+    outline: 0;
+}
+
+.ai-review-page .pr-tab.active {
+    border-bottom-color: #0d6efd;
+    color: #0a58ca;
+}
+
+.ai-review-page .pr-tab-content {
+    padding: 0 26px 8px;
+}
+
+.ai-review-page .pr-tab-panel[hidden] {
+    display: none;
+}
+
+.ai-review-page .review-section {
+    border-bottom: 1px solid #e4e9f1;
+    padding: 24px 0;
+}
+
+.ai-review-page .review-section:last-child {
+    border-bottom: 0;
+}
+
+.ai-review-page .review-section h2,
+.ai-review-page .report-metadata h2,
+.ai-review-page .analysis-process h2 {
+    color: #172033;
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.ai-review-page .review-section-heading {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.ai-review-page .review-section-heading h2 {
+    margin-bottom: 3px;
+}
+
+.ai-review-page .review-section-heading p,
+.ai-review-page .section-context {
+    color: #62748a;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.ai-review-page .review-section-heading-actions {
+    gap: 20px;
+}
+
+.ai-review-page .review-link,
+.ai-review-page .metadata-links a,
+.ai-review-page .review-text-toggle {
+    color: #0d6efd;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ai-review-page .review-link:hover,
+.ai-review-page .metadata-links a:hover,
+.ai-review-page .review-text-toggle:hover {
+    text-decoration: underline;
+}
+
+.ai-review-page .review-text-toggle {
+    background: transparent;
+    border: 0;
+    padding: 5px 0 0;
+}
+
+.ai-review-page .summary-copy,
+.ai-review-page .readable-copy {
+    color: #344054;
+    line-height: 1.62;
+    margin: 0;
+    max-width: 900px;
+}
+
+.ai-review-page .summary-collapsed {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.ai-review-page .review-list,
+.ai-review-page .test-impact-list {
+    border: 1px solid #dfe5ed;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.ai-review-page .review-row,
+.ai-review-page .test-impact-row {
+    align-items: start;
+    border-bottom: 1px solid #e4e9f1;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 150px minmax(0, 1fr);
+    padding: 15px 16px;
+}
+
+.ai-review-page .review-row:last-child,
+.ai-review-page .test-impact-row:last-child {
+    border-bottom: 0;
+}
+
+.ai-review-page .review-row h3,
+.ai-review-page .test-impact-row h3 {
+    color: #172033;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.ai-review-page .review-row p,
+.ai-review-page .test-impact-row p {
+    color: #52606d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.ai-review-page .review-finding-badge,
+.ai-review-page .review-item-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.ai-review-page .review-finding-badge {
+    border-radius: 999px;
+    justify-self: start;
+    padding: 0.28rem 0.58rem;
+    white-space: nowrap;
+}
+
+.ai-review-page .review-finding-review {
+    background-color: #fff3cd;
+    color: #755600;
+}
+
+.ai-review-page .review-finding-high {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.ai-review-page .review-finding-medium {
+    background-color: #fff3cd;
+    color: #755600;
+}
+
+.ai-review-page .review-finding-info {
+    background-color: #e7f1ff;
+    color: #0a58ca;
+}
+
+.ai-review-page .review-item-label {
+    color: #62748a;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.ai-review-page .changed-files-list {
+    border: 1px solid #dfe5ed;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.ai-review-page .changed-file-row {
+    align-items: center;
+    border-bottom: 1px solid #e4e9f1;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 9px 13px;
+}
+
+.ai-review-page .changed-file-row:last-child {
+    border-bottom: 0;
+}
+
+.ai-review-page .changed-file-identity {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    min-width: 0;
+}
+
+.ai-review-page .changed-file-identity code {
+    color: #172033;
+    font-size: 0.86rem;
+    overflow-wrap: anywhere;
+}
+
+.ai-review-page .changed-file-status {
+    background-color: #edf2f7;
+    border-radius: 999px;
+    color: #52606d;
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.48rem;
+    text-transform: capitalize;
+}
+
+.ai-review-page .changed-file-stats {
+    display: flex;
+    flex: 0 0 auto;
+    font-family: monospace;
+    font-size: 0.84rem;
+    gap: 12px;
+}
+
+.ai-review-page .test-impact-row {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+}
+
+.ai-review-page .test-impact-row > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ai-review-page .ai-test-id,
+.ai-review-page .ai-priority-badge {
+    align-self: start;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    justify-self: start;
+    padding: 0.3rem 0.58rem;
+    white-space: nowrap;
+}
+
+.ai-review-page .ai-test-id {
+    background-color: #e7f1ff;
+    color: #0a58ca;
+}
+
+.ai-review-page .ai-priority-high {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.ai-review-page .ai-priority-medium {
+    background-color: #fff3cd;
+    color: #755600;
+}
+
+.ai-review-page .ai-priority-low {
+    background-color: #dff4e8;
+    color: #146c43;
+}
+
+.ai-review-page .ai-priority-unknown {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.ai-review-page .detail-columns {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ai-review-page .limitations-section {
+    border-left: 3px solid #d39e00;
+    padding-left: 18px;
+}
+
+.ai-review-page .review-bullet-list {
+    color: #52606d;
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.ai-review-page .report-metadata {
+    background-color: #f8fafc;
+    border: 1px solid #dfe5ed;
+    border-radius: 6px;
+    margin-top: 24px;
+    padding: 20px;
+}
+
+.ai-review-page .metadata-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.ai-review-page .report-metadata-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+}
+
+.ai-review-page .report-metadata-grid dt {
+    color: #62748a;
+    font-size: 0.72rem;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+}
+
+.ai-review-page .report-metadata-grid dd {
+    color: #172033;
+    font-size: 0.88rem;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.ai-review-page .analysis-process {
+    border-top: 1px solid #e4e9f1;
+    margin-top: 24px;
+    padding: 24px 0 16px;
+}
+
+.ai-review-page .analysis-process ol {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+}
+
+.ai-review-page .analysis-process li {
+    color: #344054;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.ai-review-page .analysis-process li:not(:last-child)::after {
+    color: #0d6efd;
+    content: "→";
+    margin-left: 8px;
+}
+
+.ai-review-page .analysis-process p {
+    color: #62748a;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 960px;
+}
+
+.ai-review-page .ai-empty-state,
+.ai-review-page .ai-empty-item {
+    color: #62748a;
+    font-style: normal;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.ai-review-page .review-list > .ai-empty-state,
+.ai-review-page .test-impact-list > .ai-empty-state,
+.ai-review-page .changed-files-list > .ai-empty-state {
+    padding: 16px;
+}
+
+@media (max-width: 767.98px) {
+    .ai-review-page .ai-review-intro h1 {
+        font-size: 1.7rem;
+    }
+
+    .ai-review-page .pr-title-row,
+    .ai-review-page .review-section-heading-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ai-review-page .pr-change-stats div {
+        border-right: 0;
+        flex: 1 1 45%;
+        margin: 4px 0;
+        padding-right: 10px;
+    }
+
+    .ai-review-page .report-metadata-grid,
+    .ai-review-page .detail-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ai-review-page .review-row,
+    .ai-review-page .test-impact-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .ai-review-page .ai-review-selector {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .ai-review-page .pr-review-header,
+    .ai-review-page .pr-tab-content {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .ai-review-page .pr-review-actions .btn {
+        width: 100%;
+    }
+
+    .ai-review-page .changed-file-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .ai-review-page .report-metadata-grid,
+    .ai-review-page .detail-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-review-page .analysis-process ol {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ai-review-page .analysis-process li:not(:last-child)::after {
+        content: "↓";
+        margin-left: 7px;
+    }
+}

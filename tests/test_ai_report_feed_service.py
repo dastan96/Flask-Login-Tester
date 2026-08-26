@@ -52,6 +52,25 @@ def valid_report(pr_number=42):
     }
 
 
+def valid_changed_files():
+    return [
+        {
+            "filename": "app.py",
+            "status": "modified",
+            "additions": 20,
+            "deletions": 3,
+            "total_changes": 23,
+        },
+        {
+            "filename": "static/js/ai_assisted_qa.js",
+            "status": "modified",
+            "additions": 10,
+            "deletions": 2,
+            "total_changes": 12,
+        },
+    ]
+
+
 class MockResponse:
     def __init__(self, payload=None, status_code=200, json_error=None):
         self.payload = payload
@@ -107,6 +126,65 @@ def test_fetch_ai_report_returns_validated_data_and_fixed_pr_url(monkeypatch):
     assert result == payload
     assert calls[0]["url"] == f"{BASE_URL}/reports/pr-42.json"
     assert calls[0]["timeout"] == ai_report_feed_service.DEFAULT_TIMEOUT_SECONDS
+
+
+def test_fetch_ai_report_accepts_optional_valid_changed_files(monkeypatch):
+    payload = valid_report()
+    payload["changed_files"] = valid_changed_files()
+    mock_get(monkeypatch, MockResponse(payload))
+
+    assert ai_report_feed_service.fetch_ai_report(42, BASE_URL) == payload
+
+
+def test_fetch_ai_report_accepts_older_report_without_changed_files(monkeypatch):
+    payload = valid_report()
+    mock_get(monkeypatch, MockResponse(payload))
+
+    assert "changed_files" not in ai_report_feed_service.fetch_ai_report(42, BASE_URL)
+
+
+@pytest.mark.parametrize(
+    "changed_files",
+    [
+        {},
+        [{"filename": "app.py"}],
+        [
+            {
+                "filename": "app.py",
+                "status": "modified",
+                "additions": 20,
+                "deletions": 3,
+                "total_changes": 99,
+            }
+        ],
+        [
+            {
+                "filename": "app.py",
+                "status": "modified",
+                "additions": 20,
+                "deletions": 3,
+                "total_changes": 23,
+                "patch": "must not be public metadata",
+            },
+            {
+                "filename": "static/js/ai_assisted_qa.js",
+                "status": "modified",
+                "additions": 10,
+                "deletions": 2,
+                "total_changes": 12,
+            },
+        ],
+    ],
+)
+def test_fetch_ai_report_rejects_invalid_changed_files(monkeypatch, changed_files):
+    payload = valid_report()
+    payload["changed_files"] = changed_files
+    mock_get(monkeypatch, MockResponse(payload))
+
+    with pytest.raises(AIReportFeedError) as error:
+        ai_report_feed_service.fetch_ai_report(42, BASE_URL)
+
+    assert_feed_error(error, "invalid_report")
 
 
 @pytest.mark.parametrize(

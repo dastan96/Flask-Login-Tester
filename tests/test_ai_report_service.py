@@ -4,6 +4,7 @@ from datetime import datetime
 import pytest
 
 from services import ai_report_service
+from services.ai_analysis_contract import AI_ANALYSIS_OUTPUT_SCHEMA
 from services.openai_analysis_service import OpenAIAnalysisServiceError
 
 
@@ -29,7 +30,32 @@ def sample_analysis_context(pr_number=42):
             "deletions": 4,
             "total_changes": 24,
         },
-        "changed_files": [],
+        "changed_files": [
+            {
+                "filename": "app.py",
+                "status": "modified",
+                "additions": 10,
+                "deletions": 2,
+                "total_changes": 12,
+                "patch": "patch-secret-sentinel",
+            },
+            {
+                "filename": "services/ai_report_service.py",
+                "status": "modified",
+                "additions": 8,
+                "deletions": 0,
+                "total_changes": 8,
+                "patch": "@@ -1 +1 @@",
+            },
+            {
+                "filename": "tests/test_ai_report_service.py",
+                "status": "modified",
+                "additions": 2,
+                "deletions": 2,
+                "total_changes": 4,
+                "patch": None,
+            },
+        ],
         "qa_context": {"suites": [], "tests": []},
     }
 
@@ -121,6 +147,29 @@ def test_generate_report_reuses_context_and_writes_public_artifacts(tmp_path, mo
             "commit_sha": "abc123",
         },
         "change_summary": context["change_summary"],
+        "changed_files": [
+            {
+                "filename": "app.py",
+                "status": "modified",
+                "additions": 10,
+                "deletions": 2,
+                "total_changes": 12,
+            },
+            {
+                "filename": "services/ai_report_service.py",
+                "status": "modified",
+                "additions": 8,
+                "deletions": 0,
+                "total_changes": 8,
+            },
+            {
+                "filename": "tests/test_ai_report_service.py",
+                "status": "modified",
+                "additions": 2,
+                "deletions": 2,
+                "total_changes": 4,
+            },
+        ],
         "analysis": analysis,
     }
     assert result.generated is True
@@ -166,6 +215,9 @@ def test_generate_report_reuses_context_and_writes_public_artifacts(tmp_path, mo
     )
     assert "api-key-secret-sentinel" not in public_output
     assert "environment-secret-sentinel" not in public_output
+    assert "patch-secret-sentinel" not in public_output
+    assert "patch" not in report["changed_files"][0]
+    assert "changed_files" not in AI_ANALYSIS_OUTPUT_SCHEMA["properties"]
 
 
 def report_for_index(pr_number, generated_at, risk_level="low"):
@@ -184,6 +236,13 @@ def report_for_index(pr_number, generated_at, risk_level="low"):
             "commit_sha": context["pull_request"]["commit_sha"],
         },
         "change_summary": context["change_summary"],
+        "changed_files": [
+            {
+                key: changed_file[key]
+                for key in ("filename", "status", "additions", "deletions", "total_changes")
+            }
+            for changed_file in context["changed_files"]
+        ],
         "analysis": sample_analysis(risk_level),
     }
 

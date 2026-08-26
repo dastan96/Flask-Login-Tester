@@ -125,6 +125,36 @@ def _valid_change_summary(summary):
     )
 
 
+def _valid_changed_files(changed_files, summary):
+    if not isinstance(changed_files, list):
+        return False
+
+    required_fields = {"filename", "status", "additions", "deletions", "total_changes"}
+    for changed_file in changed_files:
+        if not isinstance(changed_file, dict) or set(changed_file) != required_fields:
+            return False
+        if not _is_string(changed_file["filename"]) or not _is_string(changed_file["status"]):
+            return False
+        if not all(
+            isinstance(changed_file[field], int)
+            and not isinstance(changed_file[field], bool)
+            and changed_file[field] >= 0
+            for field in ("additions", "deletions", "total_changes")
+        ):
+            return False
+        if changed_file["total_changes"] != (
+            changed_file["additions"] + changed_file["deletions"]
+        ):
+            return False
+
+    return (
+        summary["files_changed"] == len(changed_files)
+        and summary["additions"] == sum(item["additions"] for item in changed_files)
+        and summary["deletions"] == sum(item["deletions"] for item in changed_files)
+        and summary["total_changes"] == sum(item["total_changes"] for item in changed_files)
+    )
+
+
 def _validate_report(data, pr_number):
     if not isinstance(data, dict):
         return False
@@ -155,10 +185,16 @@ def _validate_report(data, pr_number):
     if source["merged_at"] is not None and not _is_string(source["merged_at"]):
         return False
 
+    summary = data["change_summary"]
+    if not _valid_change_summary(summary):
+        return False
+    if "changed_files" in data and not _valid_changed_files(data["changed_files"], summary):
+        return False
+
     analysis = data["analysis"]
     if not isinstance(analysis, dict) or analysis.get("risk_level") not in RISK_LEVELS:
         return False
-    return _valid_change_summary(data["change_summary"])
+    return True
 
 
 def fetch_report_index(base_url=DEFAULT_AI_REPORT_BASE_URL, timeout=DEFAULT_TIMEOUT_SECONDS):
