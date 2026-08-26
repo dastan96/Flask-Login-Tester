@@ -1,0 +1,116 @@
+{
+  "case_id": "documentation-only",
+  "description": "Clarify local setup instructions in README.md without changing executable code.",
+  "rationale": "Tests hallucination avoidance, recommendation restraint, and low-risk calibration for a documentation-only Pull Request.",
+  "analysis_context": {
+    "pull_request": {
+      "number": 1002,
+      "title": "Clarify README setup instructions",
+      "description": "Explain virtual-environment activation and the local Chromium installation command.",
+      "state": "closed",
+      "merged_at": "2026-08-21T10:00:00Z",
+      "source_branch": "docs/setup-clarity",
+      "target_branch": "main",
+      "commit_sha": "d0c51002",
+      "github_url": "https://github.com/dastan96/Flask-Login-Tester/pull/1002"
+    },
+    "change_summary": {
+      "files_changed": 1,
+      "additions": 6,
+      "deletions": 2,
+      "total_changes": 8
+    },
+    "changed_files": [
+      {
+        "filename": "README.md",
+        "status": "modified",
+        "additions": 6,
+        "deletions": 2,
+        "total_changes": 8,
+        "patch": "@@ -40,3 +40,7 @@ Local setup\n-python -m playwright install\n+source venv/bin/activate\n+python -m playwright install chromium\n+\n+The browser install is required only for local Playwright UI tests."
+      }
+    ],
+    "qa_context": {
+      "suites": [
+        {
+          "name": "Login API Tests",
+          "test_type": "api",
+          "source_files": [
+            "tests/api/test_login_api.py"
+          ],
+          "test_count": 1
+        },
+        {
+          "name": "Flask Route Tests",
+          "test_type": "route",
+          "source_files": [
+            "tests/test_routes.py"
+          ],
+          "test_count": 1
+        },
+        {
+          "name": "UI Tests",
+          "test_type": "ui",
+          "source_files": [
+            "tests/ui/test_login_ui.py"
+          ],
+          "test_count": 1
+        }
+      ],
+      "tests": [
+        {
+          "test_id": "01.01",
+          "title": "Login valid credentials",
+          "suite": "Login API Tests",
+          "test_type": "api",
+          "source_file": "tests/api/test_login_api.py",
+          "function_name": "test_api_01_01_login_valid_credentials"
+        },
+        {
+          "test_id": null,
+          "title": "Get root renders dashboard",
+          "suite": "Flask Route Tests",
+          "test_type": "route",
+          "source_file": "tests/test_routes.py",
+          "function_name": "test_get_root_renders_dashboard"
+        },
+        {
+          "test_id": "03.01",
+          "title": "Login page loads",
+          "suite": "UI Tests",
+          "test_type": "ui",
+          "source_file": "tests/ui/test_login_ui.py",
+          "function_name": "test_ui_01_login_page_loads"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "acceptable_risk_levels": [
+      "low"
+    ],
+    "maximum_relevant_existing_tests": 1,
+    "minimum_recommendations": 0,
+    "maximum_recommendations": 1,
+    "allowed_recommendation_types": [
+      "manual",
+      "other"
+    ],
+    "required_text": [
+      {
+        "name": "documentation-only scope",
+        "fields": [
+          "change_summary",
+          "risk_rationale",
+          "affected_areas",
+          "qa_notes"
+        ],
+        "any_of": [
+          "documentation-only",
+          "readme",
+          "documentation change"
+        ]
+      }
+    ]
+  }
+}
