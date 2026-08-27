@@ -91,6 +91,23 @@ def test_get_login_includes_public_navigation(client):
     assert "QA Lab" in body
     assert "QA Engineering Lab" not in body
     assert "Test positive and negative authentication scenarios using the demo credentials below." in body
+    assert "Valid usernames" in body
+    assert "Copy a credential and paste it into the login form." in body
+    assert "guest_user" in body
+    assert "automation_user1" in body
+    assert "Negative test username" in body
+    assert "invalid_user" in body
+    assert "Expected to fail authentication." in body
+    assert "Password for valid users" in body
+    assert "secret_pass123" in body
+    assert body.count('class="credential-copy"') == 4
+    assert 'aria-label="Copy valid username guest_user"' in body
+    assert 'aria-label="Copy valid username automation_user1"' in body
+    assert 'aria-label="Copy negative test username invalid_user"' in body
+    assert 'aria-label="Copy password for valid users"' in body
+    assert 'src="/static/js/login.js"' in body
+    assert "automation_user2" not in body
+    assert "error_user" not in body
     assert_public_nav(body)
 
 
@@ -119,7 +136,7 @@ def test_test_library_defines_public_suite_ids_and_dynamic_modal_title():
     expected_ids = {
         *(f"01.{number:02d}" for number in range(1, 11)),
         *(f"02.{number:02d}" for number in range(1, 12)),
-        *(f"03.{number:02d}" for number in range(1, 8)),
+        *(f"03.{number:02d}" for number in range(1, 9)),
     }
     defined_ids = set(re.findall(r'id: "(\d{2}\.\d{2})"', script))
 

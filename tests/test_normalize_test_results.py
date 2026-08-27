@@ -77,6 +77,9 @@ def test_normalize_assigns_stable_ui_test_ids_and_suite_totals():
         "test_ui_03_invalid_credentials_show_error",
         "test_ui_04_missing_username_required_validation",
         "test_ui_05_missing_password_required_validation",
+        "test_ui_06_ai_assisted_qa_renders_available_report",
+        "test_ui_07_ai_assisted_qa_handles_unavailable_reports",
+        "test_ui_08_login_demo_copies_credentials",
     ]
     root = junit_for(("tests.ui.test_login_ui", name) for name in ui_test_names)
 
@@ -91,14 +94,14 @@ def test_normalize_assigns_stable_ui_test_ids_and_suite_totals():
         for test in data["tests"]
         if test["suite"] == "UI Tests"
     ]
-    assert ui_ids == [f"03.{number:02d}" for number in range(1, 6)]
+    assert ui_ids == [f"03.{number:02d}" for number in range(1, 9)]
     assert None not in ui_ids
     assert "" not in ui_ids
 
     ui_suite = next(suite for suite in data["suites"] if suite["id"] == "ui_tests")
     assert ui_suite["name"] == "UI Tests"
-    assert ui_suite["total"] == 5
-    assert ui_suite["passed"] == 5
+    assert ui_suite["total"] == 8
+    assert ui_suite["passed"] == 8
     assert ui_suite["failed"] == 0
     assert ui_suite["skipped"] == 0
 
