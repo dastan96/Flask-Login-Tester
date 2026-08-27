@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Assisted QA - QA Lab</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="ai-page ai-review-page">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/">QA Lab</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/login">Login Demo</a></li>
+          <li class="nav-item"><a class="nav-link" href="/test-plan">Test Library</a></li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/ai">AI-Assisted QA</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/about">Architecture</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="ai-review-intro">
+      <div class="container ai-wide-container">
+        <p class="ai-kicker">AI-Assisted QA</p>
+        <h1>Pull Request QA Review</h1>
+        <p>
+          Change-impact analysis over real Pull Requests, compared with the project's automated QA catalog
+          and presented as structured recommendations for human review.
+        </p>
+      </div>
+    </section>
+
+    <section class="ai-report-shell" aria-labelledby="reportExplorerHeading">
+      <div class="container ai-wide-container">
+        <div class="ai-review-selector">
+          <label for="aiReportSelect">Analysis:</label>
+          <select class="form-select" id="aiReportSelect" disabled aria-label="Pull Request report"
+                  aria-describedby="reportExplorerHeading">
+            <option>Loading reports...</option>
+          </select>
+          <span id="reportExplorerHeading" class="visually-hidden">Persisted Pull Request analysis</span>
+        </div>
+
+        <div id="aiReportLoading" class="ai-state-panel" role="status" aria-live="polite">
+          <div class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></div>
+          <p id="aiLoadingMessage">Retrieving the latest persisted QA report...</p>
+        </div>
+
+        <div id="aiReportUnavailable" class="ai-state-panel ai-state-unavailable d-none"
+             role="status" aria-live="polite">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <div>
+            <h2>Report unavailable</h2>
+            <p id="aiUnavailableMessage">AI reports are not available yet.</p>
+          </div>
+        </div>
+
+        <article id="aiReportContent" class="pr-review d-none" aria-busy="false">
+          <p id="aiReportUpdateStatus" class="visually-hidden" role="status" aria-live="polite"></p>
+
+          <header class="pr-review-header">
+            <div class="pr-title-row">
+              <div>
+                <p class="pr-number" id="aiPrNumber"></p>
+                <h2 id="aiReportTitle"></h2>
+                <p class="pr-meta">
+                  <span id="aiMergedSummary"></span>
+                  <span aria-hidden="true">·</span>
+                  <span id="aiCommitSummary"></span>
+                </p>
+              </div>
+              <span id="aiRiskBadge" class="ai-risk-badge"></span>
+            </div>
+
+            <dl class="pr-change-stats" aria-label="Pull Request change metrics">
+              <div><dt>Files changed</dt><dd id="aiFilesChanged"></dd></div>
+              <div><dt>Additions</dt><dd id="aiAdditions" class="text-success"></dd></div>
+              <div><dt>Deletions</dt><dd id="aiDeletions" class="text-danger"></dd></div>
+              <div><dt>Total changes</dt><dd id="aiTotalChanges"></dd></div>
+            </dl>
+
+            <div class="pr-review-actions">
+              <a id="aiPullRequestLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                View Pull Request
+              </a>
+              <a id="aiRawReportLink" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                View Raw Report
+              </a>
+            </div>
+          </header>
+
+          <div class="pr-tabs" role="tablist" aria-label="AI-assisted QA report sections">
+            <button id="aiOverviewTab" class="pr-tab active" type="button" role="tab"
+                    aria-selected="true" aria-controls="aiOverviewPanel" data-report-tab="overview">
+              Overview
+            </button>
+            <button id="aiFindingsTab" class="pr-tab" type="button" role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="aiFindingsPanel" data-report-tab="findings">
+              Findings
+            </button>
+            <button id="aiTestImpactTab" class="pr-tab" type="button" role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="aiTestImpactPanel" data-report-tab="test-impact">
+              Test Impact
+            </button>
+            <button id="aiDetailsTab" class="pr-tab" type="button" role="tab" tabindex="-1"
+                    aria-selected="false" aria-controls="aiDetailsPanel" data-report-tab="details">
+              Details
+            </button>
+          </div>
+
+          <div class="pr-tab-content">
+            <section id="aiOverviewPanel" class="pr-tab-panel" role="tabpanel"
+                     aria-labelledby="aiOverviewTab" data-report-panel="overview">
+              <section class="review-section summary-section" aria-labelledby="aiSummaryHeading">
+                <h2 id="aiSummaryHeading">AI Summary</h2>
+                <p id="aiChangeSummary" class="summary-copy"></p>
+                <button id="aiSummaryToggle" class="review-text-toggle d-none" type="button"
+                        aria-expanded="false" aria-controls="aiChangeSummary">Show more</button>
+              </section>
+
+              <section class="review-section" aria-labelledby="aiKeyFindingsHeading">
+                <div class="review-section-heading">
+                  <div>
+                    <h2 id="aiKeyFindingsHeading">Key Findings</h2>
+                    <p>Highest-value observations and suggested follow-up from the persisted report.</p>
+                  </div>
+                </div>
+                <div id="aiKeyFindings" class="review-list"></div>
+              </section>
+
+              <section class="review-section" aria-labelledby="aiChangedFilesHeading">
+                <div class="review-section-heading review-section-heading-actions">
+                  <div>
+                    <h2 id="aiChangedFilesHeading">Changed Files</h2>
+                    <p>Deterministic file statistics captured when the report was generated.</p>
+                  </div>
+                  <a id="aiFullDiffLink" class="review-link d-none" target="_blank" rel="noopener noreferrer">
+                    Review full diff on GitHub
+                  </a>
+                </div>
+                <div id="aiChangedFiles" class="changed-files-list"></div>
+                <button id="aiChangedFilesToggle" class="review-text-toggle d-none" type="button"
+                        aria-expanded="false" aria-controls="aiChangedFiles"></button>
+              </section>
+            </section>
+
+            <section id="aiFindingsPanel" class="pr-tab-panel" role="tabpanel"
+                     aria-labelledby="aiFindingsTab" data-report-panel="findings" hidden>
+              <section class="review-section" aria-labelledby="aiAffectedAreasHeading">
+                <h2 id="aiAffectedAreasHeading">Affected Areas</h2>
+                <div id="aiAffectedAreas" class="review-list"></div>
+              </section>
+              <section class="review-section" aria-labelledby="aiCoverageGapsHeading">
+                <h2 id="aiCoverageGapsHeading">Potential Coverage Gaps</h2>
+                <p class="section-context">Potential gaps are review observations, not confirmed application defects.</p>
+                <div id="aiCoverageGaps" class="review-list"></div>
+              </section>
+            </section>
+
+            <section id="aiTestImpactPanel" class="pr-tab-panel" role="tabpanel"
+                     aria-labelledby="aiTestImpactTab" data-report-panel="test-impact" hidden>
+              <section class="review-section" aria-labelledby="aiExistingCoverageHeading">
+                <h2 id="aiExistingCoverageHeading">Existing Relevant Tests</h2>
+                <div id="aiExistingCoverage" class="test-impact-list"></div>
+              </section>
+              <section class="review-section" aria-labelledby="aiRecommendationsHeading">
+                <h2 id="aiRecommendationsHeading">Recommended Tests</h2>
+                <p class="section-context">Suggested additions for human QA review, not current runtime results.</p>
+                <div id="aiRecommendations" class="test-impact-list"></div>
+              </section>
+            </section>
+
+            <section id="aiDetailsPanel" class="pr-tab-panel" role="tabpanel"
+                     aria-labelledby="aiDetailsTab" data-report-panel="details" hidden>
+              <section class="review-section" aria-labelledby="aiRiskRationaleHeading">
+                <h2 id="aiRiskRationaleHeading">Full Risk Rationale</h2>
+                <p id="aiRiskRationale" class="readable-copy"></p>
+              </section>
+
+              <div class="detail-columns">
+                <section class="review-section" aria-labelledby="aiNotesHeading">
+                  <h2 id="aiNotesHeading">QA Notes</h2>
+                  <ul id="aiNotes" class="review-bullet-list"></ul>
+                </section>
+                <section class="review-section limitations-section" aria-labelledby="aiLimitationsHeading">
+                  <h2 id="aiLimitationsHeading">Analysis Limitations</h2>
+                  <ul id="aiLimitations" class="review-bullet-list"></ul>
+                </section>
+              </div>
+
+              <section class="report-metadata" aria-labelledby="aiMetadataHeading">
+                <div class="review-section-heading review-section-heading-actions">
+                  <div>
+                    <h2 id="aiMetadataHeading">Report Metadata</h2>
+                    <p>Provenance for this persisted analysis.</p>
+                  </div>
+                  <div class="metadata-links">
+                    <a id="aiDetailsPrLink" target="_blank" rel="noopener noreferrer">View Pull Request</a>
+                    <a id="aiDetailsRawLink" target="_blank" rel="noopener noreferrer">View Raw Report</a>
+                  </div>
+                </div>
+                <dl class="report-metadata-grid">
+                  <div><dt>Model</dt><dd id="aiModel"></dd></div>
+                  <div><dt>Prompt version</dt><dd id="aiPromptVersion"></dd></div>
+                  <div><dt>Report version</dt><dd id="aiReportVersion"></dd></div>
+                  <div><dt>Generated</dt><dd id="aiGeneratedAt"></dd></div>
+                  <div><dt>Merged</dt><dd id="aiMergedAt"></dd></div>
+                  <div><dt>Commit</dt><dd id="aiCommitSha"></dd></div>
+                  <div><dt>Pull Request</dt><dd id="aiMetadataPrNumber"></dd></div>
+                </dl>
+              </section>
+
+              <section class="analysis-process" aria-labelledby="aiProcessHeading">
+                <h2 id="aiProcessHeading">How This Analysis Works</h2>
+                <ol aria-label="AI-assisted QA analysis flow">
+                  <li>Pull Request</li>
+                  <li>Change Extraction</li>
+                  <li>Existing QA Catalog</li>
+                  <li>AI Change-Impact Analysis</li>
+                  <li>Structured Report</li>
+                  <li>Human Review</li>
+                </ol>
+                <p>
+                  GitHub supplies deterministic change data, and the automated-test catalog is derived from
+                  project test source. Structured Outputs constrain the analysis shape. pytest and Playwright
+                  remain the deterministic executors; AI recommendations support human QA review.
+                </p>
+              </section>
+            </section>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-primary text-white py-3 mt-4">
+    <div class="container text-center">
+      <a href="https://www.linkedin.com/in/dabbassian/" class="text-white me-3"
+         target="_blank" rel="noopener noreferrer" title="LinkedIn">
+        <i class="bi bi-linkedin fs-3"></i>
+      </a>
+      <a href="https://github.com/dastan96" class="text-white"
+         target="_blank" rel="noopener noreferrer" title="GitHub">
+        <i class="bi bi-github fs-3"></i>
+      </a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/ai_assisted_qa.js"></script>
+</body>
+</html>

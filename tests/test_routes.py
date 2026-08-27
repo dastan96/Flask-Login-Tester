@@ -1,6 +1,9 @@
 import re
 from pathlib import Path
 
+import app as app_module
+from services.ai_report_feed_service import AIReportFeedError
+
 
 def assert_dashboard_response(response):
     body = response.get_data(as_text=True)
@@ -10,6 +13,7 @@ def assert_dashboard_response(response):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
+    assert 'href="/ai">AI-Assisted QA</a>' in body
     assert 'href="/about">Architecture</a>' in body
     assert 'href="/about">About</a>' not in body
     assert "Logout" not in body
@@ -32,6 +36,7 @@ def assert_public_nav(body):
     assert 'href="/">Dashboard</a>' in body
     assert 'href="/login">Login Demo</a>' in body
     assert 'href="/test-plan">Test Library</a>' in body
+    assert 'href="/ai">AI-Assisted QA</a>' in body
     assert 'href="/about">Architecture</a>' in body
     assert 'href="/about">About</a>' not in body
     assert "Logout" not in body
@@ -114,7 +119,7 @@ def test_test_library_defines_public_suite_ids_and_dynamic_modal_title():
     expected_ids = {
         *(f"01.{number:02d}" for number in range(1, 11)),
         *(f"02.{number:02d}" for number in range(1, 12)),
-        *(f"03.{number:02d}" for number in range(1, 6)),
+        *(f"03.{number:02d}" for number in range(1, 8)),
     }
     defined_ids = set(re.findall(r'id: "(\d{2}\.\d{2})"', script))
 
@@ -129,6 +134,47 @@ def test_test_library_defines_public_suite_ids_and_dynamic_modal_title():
     assert 'title.className = "case-title";' in script
     assert "modalTitle.append(id, title);" in script
     assert "testCase.id} — ${testCase.title}" not in script
+
+
+def test_get_ai_assisted_qa_renders_read_only_report_explorer(client, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "must-not-appear-in-page")
+
+    response = client.get("/ai")
+    body = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert_public_nav(body)
+    for expected in [
+        "Pull Request QA Review",
+        'id="aiReportSelect"',
+        'id="aiReportLoading"',
+        'id="aiReportUnavailable"',
+        'id="aiReportContent"',
+        'role="tablist"',
+        "Overview",
+        "Findings",
+        "Test Impact",
+        "Details",
+        "AI Summary",
+        "Key Findings",
+        "Changed Files",
+        "Full Risk Rationale",
+        "Affected Areas",
+        "Existing Relevant Tests",
+        "Potential Coverage Gaps",
+        "Recommended Tests",
+        "QA Notes",
+        "Analysis Limitations",
+        "Report Metadata",
+        "How This Analysis Works",
+        "/static/js/ai_assisted_qa.js",
+    ]:
+        assert expected in body
+
+    assert "must-not-appear-in-page" not in body
+    assert "OPENAI_API_KEY" not in body
+    assert "Generate AI" not in body
+    assert 'method="POST"' not in body
 
 
 def test_get_about_reflects_current_reporting_architecture(client):
@@ -156,6 +202,18 @@ def test_get_about_reflects_current_reporting_architecture(client):
         "QA Lab dashboard",
         "Hosted on Render",
         "Pull requests validate backend, browser, and aggregation jobs; production reporting is published only from main.",
+        "AI-ASSISTED QA",
+        "Change-Impact Analysis with Deterministic Boundaries",
+        "Merged PR evidence",
+        "Source-derived QA catalog",
+        "Structured analysis context",
+        "AI change-impact analysis",
+        "Structured AI report",
+        "ai-reports branch",
+        "Read-only Flask feed",
+        "AI-Assisted QA explorer",
+        "pytest and Playwright remain",
+        "cannot trigger OpenAI",
         "WHY THIS ARCHITECTURE?",
         "Separate test execution",
         "One reporting source of truth",
@@ -176,6 +234,7 @@ def test_get_about_reflects_current_reporting_architecture(client):
         "run_all_tests.py",
         "api_tests.py",
         "project_diagram.jpeg",
+        "AI feature under development",
     ]:
         assert stale_content not in body
 
@@ -243,3 +302,122 @@ def test_missing_password_renders_accessible_error(client):
     assert response.request.path == "/login"
     assert 'role="alert"' in body
     assert "Password is a required field." in body
+
+
+def ai_report_index_payload():
+    return {
+        "report_version": "1.0",
+        "reports": [
+            {
+                "pr_number": 42,
+                "title": "Add AI report feed",
+                "risk_level": "medium",
+                "generated_at": "2026-08-25T12:00:00Z",
+                "model": "gpt-5.6-terra",
+                "prompt_version": "1.0",
+                "report_path": "reports/pr-42.json",
+            }
+        ],
+    }
+
+
+def ai_report_payload():
+    return {
+        "report_version": "1.0",
+        "prompt_version": "1.0",
+        "generated_at": "2026-08-25T12:00:00Z",
+        "model": "gpt-5.6-terra",
+        "source": {"pr_number": 42, "pr_title": "Add AI report feed"},
+        "change_summary": {"files_changed": 2, "additions": 30, "deletions": 5, "total_changes": 35},
+        "analysis": {"risk_level": "medium"},
+    }
+
+
+def test_get_ai_report_index_returns_feed_result_without_openai_key(client, monkeypatch):
+    payload = ai_report_index_payload()
+    calls = []
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    def fetch(base_url):
+        calls.append(base_url)
+        return payload
+
+    monkeypatch.setattr(app_module, "fetch_report_index", fetch)
+
+    response = client.get("/api/ai-reports")
+
+    assert response.status_code == 200
+    assert response.get_json() == {
+        "available": True,
+        "source": "github_raw",
+        "data": payload,
+        "error": None,
+    }
+    assert calls == [app_module.app.config["AI_REPORT_FEED_BASE_URL"]]
+
+
+def test_get_selected_ai_report_returns_feed_result(client, monkeypatch):
+    payload = ai_report_payload()
+    calls = []
+
+    def fetch(pr_number, base_url):
+        calls.append((pr_number, base_url))
+        return payload
+
+    monkeypatch.setattr(app_module, "fetch_ai_report", fetch)
+
+    response = client.get("/api/ai-reports/42")
+
+    assert response.status_code == 200
+    assert response.get_json()["data"] == payload
+    assert calls == [(42, app_module.app.config["AI_REPORT_FEED_BASE_URL"])]
+
+
+def test_get_ai_report_index_returns_safe_unavailable_response(client, monkeypatch):
+    def fail(_base_url):
+        raise AIReportFeedError("feed_unavailable")
+
+    monkeypatch.setattr(app_module, "fetch_report_index", fail)
+
+    response = client.get("/api/ai-reports")
+
+    assert response.status_code == 503
+    assert response.get_json() == {
+        "available": False,
+        "source": "github_raw",
+        "data": None,
+        "error": {
+            "code": "feed_unavailable",
+            "message": "AI reports are not available yet.",
+        },
+    }
+
+
+def test_get_missing_ai_report_returns_safe_not_found_response(client, monkeypatch):
+    def fail(_pr_number, _base_url):
+        raise AIReportFeedError("report_not_found")
+
+    monkeypatch.setattr(app_module, "fetch_ai_report", fail)
+
+    response = client.get("/api/ai-reports/42")
+
+    assert response.status_code == 404
+    assert response.get_json()["error"] == {
+        "code": "report_not_found",
+        "message": "The requested AI report was not found.",
+    }
+
+
+def test_get_malformed_ai_report_returns_safe_upstream_response(client, monkeypatch):
+    def fail(_pr_number, _base_url):
+        raise AIReportFeedError("invalid_report")
+
+    monkeypatch.setattr(app_module, "fetch_ai_report", fail)
+
+    response = client.get("/api/ai-reports/42")
+
+    assert response.status_code == 502
+    assert response.get_json()["error"] == {
+        "code": "invalid_report",
+        "message": "The AI report is not in a supported format.",
+    }

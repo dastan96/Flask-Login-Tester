@@ -38,6 +38,9 @@
             <a class="nav-link" href="/test-plan">Test Library</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/ai">AI-Assisted QA</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link active" href="/about">Architecture</a>
           </li>
         </ul>
@@ -53,7 +56,7 @@
         <p>
           QA Lab is a compact Flask-based portfolio project demonstrating layered automated
           testing across API, application routes, and browser UI, with CI orchestration,
-          public reporting, and deployment.
+          public reporting, AI-assisted change-impact analysis, and deployment.
         </p>
       </section>
 
@@ -68,6 +71,8 @@
           <span>Layered Testing</span>
           <span>CI/CD</span>
           <span>Automated Reporting</span>
+          <span>AI-Assisted QA</span>
+          <span>Structured Analysis</span>
         </div>
         <div class="tag-group tech-tags" aria-label="Technology stack">
           <span>Python</span>
@@ -79,6 +84,54 @@
           <span>Render</span>
           <span>Bootstrap</span>
         </div>
+      </section>
+
+      <section class="about-section">
+        <div class="about-section-header">
+          <p class="about-kicker">AI-ASSISTED QA</p>
+          <h2>Change-Impact Analysis with Deterministic Boundaries</h2>
+        </div>
+        <div class="flow-diagram" aria-label="AI-assisted QA reporting architecture">
+          <div class="flow-row flow-row-split">
+            <div class="flow-node">
+              <strong>Merged PR evidence</strong>
+              <span>Metadata, changed files, and patches</span>
+            </div>
+            <div class="flow-node">
+              <strong>Source-derived QA catalog</strong>
+              <span>Real pytest and Playwright coverage</span>
+            </div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>Structured analysis context</strong>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>AI change-impact analysis</strong>
+            <span>Risk, test relevance, coverage gaps, and limitations</span>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-node flow-node-wide">
+            <strong>Structured AI report</strong>
+            <span>Persisted on the dedicated ai-reports branch</span>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">↓</div>
+          <div class="flow-row flow-row-split">
+            <div class="flow-node">
+              <strong>Read-only Flask feed</strong>
+            </div>
+            <div class="flow-node">
+              <strong>AI-Assisted QA explorer</strong>
+              <span>Human review at /ai</span>
+            </div>
+          </div>
+        </div>
+        <p class="flow-caption">
+          Deterministic code owns report provenance and change statistics. pytest and Playwright remain
+          the source of truth for execution results; public visitors can review persisted analysis but
+          cannot trigger OpenAI.
+        </p>
       </section>
 
       <section class="about-section">

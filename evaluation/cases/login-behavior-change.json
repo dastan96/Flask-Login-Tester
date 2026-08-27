@@ -1,0 +1,186 @@
+{
+  "case_id": "login-behavior-change",
+  "description": "Remove automation_user2 from the valid demo-user set.",
+  "rationale": "Tests whether analysis identifies authentication impact, grounds itself in login coverage, and recommends focused positive and negative regression checks.",
+  "analysis_context": {
+    "pull_request": {
+      "number": 1001,
+      "title": "Remove automation_user2 from valid demo users",
+      "description": "Retire the second demo account while preserving automation_user1 for supported login scenarios.",
+      "state": "closed",
+      "merged_at": "2026-08-20T14:30:00Z",
+      "source_branch": "cleanup/demo-users",
+      "target_branch": "main",
+      "commit_sha": "a11ce1001",
+      "github_url": "https://github.com/dastan96/Flask-Login-Tester/pull/1001"
+    },
+    "change_summary": {
+      "files_changed": 1,
+      "additions": 1,
+      "deletions": 2,
+      "total_changes": 3
+    },
+    "changed_files": [
+      {
+        "filename": "app.py",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 2,
+        "total_changes": 3,
+        "patch": "@@ -43,8 +43,7 @@ users = {\n     \"guest_user\": \"secret_pass123\",\n     \"automation_user1\": \"secret_pass123\",\n-    \"automation_user2\": \"secret_pass123\",\n     \"error_user\": \"secret_pass123\"\n }"
+      }
+    ],
+    "qa_context": {
+      "suites": [
+        {
+          "name": "Login API Tests",
+          "test_type": "api",
+          "source_files": [
+            "tests/api/test_login_api.py"
+          ],
+          "test_count": 4
+        },
+        {
+          "name": "UI Tests",
+          "test_type": "ui",
+          "source_files": [
+            "tests/ui/test_login_ui.py"
+          ],
+          "test_count": 5
+        }
+      ],
+      "tests": [
+        {
+          "test_id": "01.01",
+          "title": "Login valid credentials",
+          "suite": "Login API Tests",
+          "test_type": "api",
+          "source_file": "tests/api/test_login_api.py",
+          "function_name": "test_api_01_01_login_valid_credentials"
+        },
+        {
+          "test_id": "01.02",
+          "title": "Login unknown username",
+          "suite": "Login API Tests",
+          "test_type": "api",
+          "source_file": "tests/api/test_login_api.py",
+          "function_name": "test_api_01_02_login_unknown_username"
+        },
+        {
+          "test_id": "01.03",
+          "title": "Login wrong password",
+          "suite": "Login API Tests",
+          "test_type": "api",
+          "source_file": "tests/api/test_login_api.py",
+          "function_name": "test_api_01_03_login_wrong_password"
+        },
+        {
+          "test_id": "01.04",
+          "title": "Login missing username",
+          "suite": "Login API Tests",
+          "test_type": "api",
+          "source_file": "tests/api/test_login_api.py",
+          "function_name": "test_api_01_04_login_missing_username"
+        },
+        {
+          "test_id": "03.02",
+          "title": "Valid login shows success",
+          "suite": "UI Tests",
+          "test_type": "ui",
+          "source_file": "tests/ui/test_login_ui.py",
+          "function_name": "test_ui_02_valid_login_shows_success"
+        },
+        {
+          "test_id": "03.03",
+          "title": "Invalid credentials show error",
+          "suite": "UI Tests",
+          "test_type": "ui",
+          "source_file": "tests/ui/test_login_ui.py",
+          "function_name": "test_ui_03_invalid_credentials_show_error"
+        },
+        {
+          "test_id": "03.04",
+          "title": "Missing username required validation",
+          "suite": "UI Tests",
+          "test_type": "ui",
+          "source_file": "tests/ui/test_login_ui.py",
+          "function_name": "test_ui_04_missing_username_required_validation"
+        },
+        {
+          "test_id": "03.06",
+          "title": "AI assisted QA renders available report",
+          "suite": "UI Tests",
+          "test_type": "ui",
+          "source_file": "tests/ui/test_login_ui.py",
+          "function_name": "test_ui_06_ai_assisted_qa_renders_available_report"
+        },
+        {
+          "test_id": "03.07",
+          "title": "AI assisted QA handles unavailable reports",
+          "suite": "UI Tests",
+          "test_type": "ui",
+          "source_file": "tests/ui/test_login_ui.py",
+          "function_name": "test_ui_07_ai_assisted_qa_handles_unavailable_reports"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "acceptable_risk_levels": [
+      "medium",
+      "high"
+    ],
+    "required_existing_test_ids": [
+      "01.01",
+      "01.02"
+    ],
+    "forbidden_existing_test_ids": [
+      "03.06",
+      "03.07"
+    ],
+    "minimum_recommendations": 2,
+    "maximum_recommendations": 5,
+    "allowed_recommendation_types": [
+      "api",
+      "ui",
+      "manual"
+    ],
+    "required_text": [
+      {
+        "name": "authentication impact",
+        "fields": [
+          "change_summary",
+          "risk_rationale",
+          "affected_areas"
+        ],
+        "any_of": [
+          "authentication",
+          "login"
+        ]
+      },
+      {
+        "name": "changed demo user",
+        "fields": [
+          "change_summary",
+          "affected_areas",
+          "recommended_tests"
+        ],
+        "any_of": [
+          "automation_user2",
+          "removed demo user"
+        ]
+      },
+      {
+        "name": "negative regression coverage",
+        "fields": [
+          "recommended_tests"
+        ],
+        "any_of": [
+          "invalid credential",
+          "negative",
+          "rejected"
+        ]
+      }
+    ]
+  }
+}

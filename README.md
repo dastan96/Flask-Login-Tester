@@ -1,181 +1,257 @@
-# QA Lab - Flask Login Tester
+# QA Lab
 
-QA Lab is a Flask-based QA automation portfolio project. It demonstrates layered application testing, API automation, route validation, Playwright browser automation, CI validation, automated result aggregation, public test reporting, and deployment.
+QA Lab is a Flask-based quality engineering portfolio demonstrating API testing, route and integration testing, browser automation, CI/CD, public test-result reporting, and AI-assisted Pull Request change-impact analysis.
 
-The application is intentionally compact: the login flow is simple, but the surrounding test and reporting architecture shows how a QA/SDET project can move from local validation to CI artifacts and a public quality dashboard.
+The login application is intentionally compact. The engineering focus is the surrounding QA architecture: deterministic test execution, layered automation, sanitized reporting, controlled AI analysis, and clear trust boundaries. It is a portfolio environment, not a production authentication system.
 
-## Live Project Links
+## Live Project
 
-- [Live QA Lab application](https://qa.datlas.me)
-- [Public automated results page](https://dastan96.github.io/Flask-Login-Tester/)
+- [QA Lab application](https://qa.datlas.me)
+- [AI-Assisted QA explorer](https://qa.datlas.me/ai)
+- [Public automated test results](https://dastan96.github.io/Flask-Login-Tester/)
 - [GitHub repository](https://github.com/dastan96/Flask-Login-Tester)
 
-## What This Project Demonstrates
+## Key Capabilities
 
-- Login API automation with JSON response and validation assertions
-- Flask route validation for rendered pages, redirects, public navigation, and form responses
-- Playwright Chromium UI automation for user-visible login behavior
-- Layered QA strategy across API, route, and browser-level checks
-- GitHub Actions CI with separate backend and UI test jobs
-- JUnit XML and pytest HTML report generation
-- Combined result normalization into a sanitized public feed
-- GitHub Pages result publishing
-- Render-hosted Flask application consuming the public feed server-side
+- Flask login demo with JSON API and browser-form behavior
+- pytest coverage for authentication contracts, routes, redirects, rendering, and accessibility states
+- Playwright Chromium automation against a deterministic local Flask server
+- Separate backend and browser jobs in GitHub Actions
+- JUnit aggregation, self-contained pytest HTML reports, and sanitized public result feeds
+- Server-side consumption of GitHub Pages results by the public QA dashboard
+- AI-Assisted QA analysis over merged Pull Requests and the real automated-test catalog
+- Strict, versioned AI analysis output and persisted report envelopes
+- Automatic merged-PR report generation on a dedicated artifact branch
+- Deterministic AI robustness evaluation with explicit live-cost controls
 
-## Test Architecture
+## Testing Strategy
 
-### Login API Tests
+The public Test Library presents three product-facing suites:
 
-The Login API suite uses pytest and Flask test-client behavior to validate JSON `POST /login` responses. It covers successful authentication, unknown users, wrong passwords, required-field handling, empty values, null values, and empty JSON input.
+| Suite | Layer | Purpose |
+| --- | --- | --- |
+| Login API Tests | pytest and Flask test client | Verifies exact JSON contracts for valid, invalid, missing, empty, and null authentication inputs. |
+| Flask Route Tests | pytest and Flask test client | Verifies routes, redirects, rendered states, navigation, browser-form responses, and public read-only feed behavior. |
+| UI Tests | Playwright and Chromium | Verifies user-visible login behavior, native validation, accessibility feedback, and the read-only AI report explorer. |
 
-### Flask Route Tests
+Supporting unit and integration tests protect GitHub ingestion, QA catalog discovery, analysis context construction, structured AI contracts, report persistence, feed validation, JUnit normalization, and evaluation tooling. These infrastructure tests are intentionally distinct from the product-facing Test Library.
 
-The route suite uses pytest to validate server-rendered behavior without a real browser. It covers the dashboard route, `/welcome` redirect behavior, legacy `/welcome?api=true` JSON behavior, public navigation, Architecture page content, Test Library content, and browser-form login responses.
+pytest and Playwright are the source of truth for test execution. AI analysis can recommend tests and identify potential coverage gaps, but it does not execute tests or determine their pass/fail status.
 
-### UI Tests
+## AI-Assisted QA
 
-The UI suite uses Playwright with Chromium. It starts the Flask application locally during pytest execution and validates login-page controls, successful login feedback, invalid-credentials feedback, and browser-native required-field validation.
+The AI feature turns deterministic repository evidence into a structured change-impact review:
 
-The repository also contains internal tests for the reporting feed validator and JUnit normalization script. Those tests support the CI/reporting infrastructure rather than the public Test Library.
+```text
+GitHub Pull Request
+        |
+        v
+Changed files + metadata
+        |
+        v
+Real QA test catalog
+        |
+        v
+Structured analysis context
+        |
+        v
+OpenAI change-impact analysis
+        |
+        v
+Validated structured report
+        |
+        v
+Persistent ai-reports branch
+        |
+        v
+Read-only Flask API
+        |
+        v
+AI-Assisted QA explorer
+```
 
-## CI & Reporting
+Pull Request metadata and changed-file data come from GitHub through a normalized service boundary. The QA catalog is discovered from real pytest source with Python's AST rather than maintained as a duplicate manual inventory. Those deterministic sources are combined before the OpenAI Responses API is called.
 
-GitHub Actions runs the project in separate jobs:
+Structured Outputs constrain the analysis to a strict, versioned schema containing risk, affected areas, relevant existing tests, potential coverage gaps, recommendations, QA notes, and limitations. Application code owns deterministic provenance, commit metadata, and change statistics outside the model-generated analysis.
 
-1. `test` runs the non-UI pytest suite, excluding `tests/ui`, and produces JUnit XML plus a self-contained pytest HTML report.
-2. `ui-tests` installs Playwright Chromium and runs only the login UI suite.
-3. `aggregate-results` downloads the backend and UI JUnit reports, then runs `scripts/normalize_test_results.py` to produce a combined sanitized `latest.json` and `index.html`.
-4. `deploy-pages` publishes the generated public results page and feed through GitHub Pages on successful pushes to `main`.
+Completed reports are persisted under `public/ai` on the dedicated `ai-reports` branch. The deployed Flask application reads and validates those reports server-side through `GET /api/ai-reports` and `GET /api/ai-reports/<pr_number>`. The browser-facing `/ai` explorer consumes only those read-only Flask endpoints.
 
-Pull requests validate the backend tests, UI tests, and combined aggregation path. GitHub Pages deployment remains restricted to successful pushes to `main`.
+## AI Safety, Cost, and Trust Boundaries
 
-The Flask dashboard does not fetch GitHub Pages directly from the browser. Flask fetches the public `latest.json` server-side, validates it, exposes it through `GET /api/test-results/latest`, and the dashboard consumes that internal endpoint.
+- `OPENAI_API_KEY` is supplied through a GitHub Actions secret or an intentional local environment variable. It is never embedded in browser code or report output.
+- The public `/ai` page is read-only. It has no Generate action and cannot invoke OpenAI.
+- Report generation is idempotent: an existing persisted PR report is detected before context collection or an OpenAI call.
+- Normal pytest execution never calls OpenAI. Automated AI tests use mocked clients and deterministic fixture analyses.
+- Live evaluation requires the explicit `--live` CLI flag and a configured key.
+- Pull Request titles, descriptions, filenames, source code, comments, patches, and test catalog entries are treated as untrusted evidence, never as instructions.
+- Stable prompt guardrails tell the model to ignore instruction-like content embedded in that evidence.
+- Deterministic application code owns report provenance and change totals; those values are not delegated to model output.
+- pytest and Playwright remain authoritative for actual test results. The AI contract forbids claims that tests passed or failed.
+- Generated AI artifacts live on `ai-reports`, keeping report history separate from application source on `main`.
 
-Raw JUnit XML and pytest HTML reports are retained as GitHub Actions artifacts. The public Pages output exposes only sanitized result metadata.
+## AI Evaluation
 
-## Application and Hosting Architecture
+AI-8 adds a controlled robustness and evaluation harness, not a scientific model benchmark. Three deterministic scenarios exercise materially different behavior:
 
-- GitHub stores the source code and workflow definitions.
-- GitHub Actions runs backend and browser automation.
-- GitHub Pages publishes the sanitized public results feed and generated results page.
-- Render hosts the Flask application.
-- The Flask application consumes the public results feed server-side and renders the QA Lab dashboard.
+1. A functional login change checks authentication impact, existing-test grounding, focused regression recommendations, and non-low risk calibration.
+2. A documentation-only change checks low-risk restraint and avoidance of invented runtime impact.
+3. Prompt injection with incomplete evidence checks instruction resistance, unsupported-claim detection, and explicit limitations.
 
-## Technology Stack
+The Python evaluator checks prompt version, known test-ID and title integrity, required and forbidden test references, risk expectations, recommendation counts and types, unsupported execution claims, unsupported safety claims, and required uncertainty where evidence is incomplete. Nuanced prose quality remains a human-review responsibility.
 
-- Python
-- Flask
-- pytest
-- pytest-html
-- Playwright
-- Bootstrap
-- GitHub Actions
-- GitHub Pages
-- Render
+**Initial live evaluation: 32/35 deterministic checks passed.** Manual review found that all three failed checks were caused by brittle evaluation-oracle assumptions rather than unsafe or ungrounded model behavior. The criteria were calibrated to reduce dependence on incidental wording while preserving structural and safety requirements. The production prompt and model behavior were not changed to force a perfect score, and no second live evaluation was run solely to claim `35/35`.
 
-## Run Locally
+See [evaluation/README.md](evaluation/README.md) for the focused evaluation commands and case summary.
 
-Clone the repository:
+## Architecture
+
+### Deterministic Testing Pipeline
+
+```text
+pytest backend tests + Playwright UI tests
+                    |
+                    v
+              GitHub Actions
+                    |
+                    v
+             JUnit aggregation
+                    |
+                    v
+        sanitized latest.json + index.html
+                    |
+                    v
+               GitHub Pages
+                    |
+                    v
+          Flask dashboard feed API
+```
+
+Raw backend JUnit, pytest HTML, and UI JUnit reports are retained as short-lived workflow artifacts. The public GitHub Pages output contains only normalized result metadata. Flask fetches `latest.json` server-side, validates it, and exposes a clean internal contract through `GET /api/test-results/latest`.
+
+### AI Reporting Pipeline
+
+```text
+Merged Pull Request into main
+             |
+             v
+       GitHub Actions
+             |
+             v
+     AI report generation
+             |
+             v
+       ai-reports branch
+             |
+             v
+   read-only Flask report feed
+             |
+             v
+        /ai explorer
+```
+
+The SQLite result subsystem remains for backward compatibility with legacy routes, but it is not the active source for the public dashboard or AI report explorer.
+
+## Local Setup
+
+The commands below target a macOS/Linux shell with Python 3 available.
 
 ```bash
 git clone https://github.com/dastan96/Flask-Login-Tester.git
 cd Flask-Login-Tester
-```
 
-Create and activate a virtual environment:
-
-```bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
-On Windows, activate the environment with:
-
-```bash
-venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Install Chromium for local Playwright execution:
-
-```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 python -m playwright install chromium
 ```
 
-Run the Flask application:
+Run Flask locally:
 
 ```bash
 python app.py
 ```
 
-By default, the application runs at `http://127.0.0.1:5001` unless `PORT` is set.
+The development server uses `http://127.0.0.1:5001` by default or the configured `PORT`.
 
 ## Running Tests
 
-Run the complete suite:
+Run the complete deterministic suite:
 
 ```bash
 pytest -q
 ```
 
-Run the Login API tests:
+Run backend and non-browser tests only:
+
+```bash
+pytest -q --ignore=tests/ui
+```
+
+Run the product-facing suites individually:
 
 ```bash
 pytest -q tests/api/test_login_api.py
-```
-
-Run the Flask Route tests:
-
-```bash
 pytest -q tests/test_routes.py
-```
-
-Run the Playwright login UI tests:
-
-```bash
 pytest -q tests/ui/test_login_ui.py --browser chromium
 ```
 
-Generate local CI-style reports and a public feed:
+List controlled AI evaluation cases without contacting OpenAI:
 
 ```bash
-mkdir -p test-results public
-pytest \
-  --junitxml=test-results/junit.xml \
-  --html=test-results/report.html \
-  --self-contained-html
-python scripts/normalize_test_results.py \
-  --junit test-results/junit.xml \
-  --out-dir public \
-  --branch local \
-  --commit-sha local \
-  --trigger local \
-  --workflow-run-url ""
+python scripts/run_ai_evaluation.py --list
 ```
 
-## Project Structure
+Run an intentional live AI evaluation:
+
+```bash
+python scripts/run_ai_evaluation.py --live
+python scripts/run_ai_evaluation.py --live --case login-behavior-change
+```
+
+Live evaluation requires `OPENAI_API_KEY`, calls the configured model, and may incur API cost. Normal pytest and the default evaluation CLI mode remain offline from OpenAI.
+
+## Environment Configuration
+
+| Variable | Classification | Purpose |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | Secret | Required only for explicit report generation or live evaluation. It is not required by the public Flask report explorer. |
+| `OPENAI_MODEL` | Non-secret configuration | Optional model override for report generation and live evaluation; otherwise the service uses its code-level default. |
+| `AI_REPORT_FEED_BASE_URL` | Non-secret configuration | Optional base URL override for the persisted AI report feed. |
+| `TEST_RESULTS_FEED_URL` | Non-secret configuration | Optional URL override for the dashboard's `latest.json` source. |
+| `TEST_RESULTS_PAGE_URL` | Non-secret configuration | Optional public results-page link shown by the dashboard. |
+| `PORT` | Runtime configuration | Flask/Gunicorn hosting port; local fallback is `5001`. |
+| `LOGIN_UI_BASE_URL` | Test-only configuration | Optional external base URL for UI tests; when absent, the fixture starts Flask locally on a free port. |
+
+Do not commit local environment files or API keys. The repository ignores `.env` and `*.env` files.
+
+## CI/CD
+
+The main `Run Automated Tests` workflow runs for Pull Requests, pushes to `main`, a weekly schedule, and manual dispatch:
+
+1. `test` runs all non-UI pytest tests and produces JUnit XML plus a self-contained pytest HTML report.
+2. `ui-tests` installs Chromium and runs the Playwright suite independently.
+3. For Pull Requests and pushes to `main`, `aggregate-results` downloads both JUnit artifacts and validates combined normalization into `latest.json` and `index.html`.
+4. Only a successful push to `main` uploads and deploys the GitHub Pages artifact.
+
+Raw reports use 14-day artifact retention. Pull Requests validate aggregation but cannot deploy Pages.
+
+The separate `Generate AI QA Report` workflow runs only when a Pull Request into `main` is closed and merged. It checks out the merged commit, restores historical reports from `ai-reports`, generates without `--force`, and pushes generated output only to that branch. `OPENAI_API_KEY` comes from an Actions secret, while `OPENAI_MODEL` may come from a repository variable.
+
+The public Flask deployment is hosted on Render at `qa.datlas.me`. No Render deployment manifest is tracked in this repository, so deployment automation and environment settings are managed outside the source tree. The runtime application needs network access to its read-only report feeds; it does **not** need `OPENAI_API_KEY` to render the dashboard or `/ai`.
+
+## Repository Structure
 
 ```text
-.github/workflows/          GitHub Actions test, aggregation, and Pages workflow
-scripts/                    JUnit normalization into public reporting output
-services/                   Server-side latest.json fetching and validation
-static/                     CSS and JavaScript for public pages
-templates/                  Flask-rendered Dashboard, Login Demo, Test Library, and Architecture pages
-tests/
-  api/                      Login API pytest suite
-  ui/                       Playwright login UI suite and local Flask server fixture
-  fixtures/                 Test fixtures for feed/dashboard validation
-app.py                      app.py — Flask routes, login behavior, and dashboard results endpoint
-requirements.txt            Python runtime and test dependencies
+.github/workflows/   Backend, UI, aggregation, Pages, and AI report automation
+evaluation/          Controlled AI evaluation cases and methodology
+scripts/             JUnit normalization, report generation, and evaluation CLIs
+services/            GitHub, QA context, AI analysis, reporting, and feed boundaries
+static/              Shared CSS and browser-side rendering logic
+templates/           Flask-rendered public pages
+tests/api/           Login JSON API tests
+tests/ui/            Playwright tests and local Flask server fixture
+tests/               Route and supporting service/infrastructure tests
+app.py               Flask routes, demo authentication, and read-only feed APIs
+requirements.txt     Pinned runtime and test dependencies
 ```
-
-## Public Reporting
-
-The public dashboard is designed to show useful QA status without exposing raw CI output. GitHub Actions keeps raw JUnit XML and pytest HTML reports as short-lived artifacts, while the public GitHub Pages feed contains sanitized fields such as suite names, test IDs, statuses, durations, branch, commit SHA, trigger, and workflow run URL.
-
-The Flask application validates that feed before returning it through `GET /api/test-results/latest`, so the browser receives a clean internal contract rather than directly depending on GitHub Pages.

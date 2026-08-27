@@ -1,0 +1,91 @@
+name: Generate AI QA Report
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  generate-ai-report:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout merged main source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check for existing AI report branch
+        id: report-branch
+        run: |
+          if git ls-remote --exit-code --heads origin refs/heads/ai-reports >/dev/null 2>&1; then
+            echo "exists=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Checkout existing AI report history
+        if: steps.report-branch.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ai-reports
+          path: ai-report-branch
+
+      - name: Prepare first AI report branch checkout
+        if: steps.report-branch.outputs.exists == 'false'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ai-report-branch
+
+      - name: Initialize first AI report branch
+        if: steps.report-branch.outputs.exists == 'false'
+        run: git -C ai-report-branch switch --orphan ai-reports
+
+      - name: Restore previous AI reports
+        if: steps.report-branch.outputs.exists == 'true'
+        run: |
+          if [ -d ai-report-branch/public/ai ]; then
+            mkdir -p public/ai
+            cp -a ai-report-branch/public/ai/. public/ai/
+          fi
+
+      - name: Generate AI QA report
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+        run: python scripts/generate_ai_report.py --pr "${{ github.event.pull_request.number }}"
+
+      - name: Stage AI report artifacts
+        run: |
+          mkdir -p ai-report-branch/public/ai
+          cp -a public/ai/. ai-report-branch/public/ai/
+
+      - name: Commit and push AI report changes
+        run: |
+          git -C ai-report-branch config user.name "github-actions[bot]"
+          git -C ai-report-branch config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C ai-report-branch add public/ai
+
+          if git -C ai-report-branch diff --cached --quiet; then
+            echo "AI report already exists; no artifact changes to commit."
+            exit 0
+          fi
+
+          git -C ai-report-branch commit -m "chore(ai): publish report for PR #${{ github.event.pull_request.number }}"
+          git -C ai-report-branch push origin HEAD:ai-reports

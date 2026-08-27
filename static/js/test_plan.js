@@ -309,7 +309,7 @@ const TEST_LIBRARY = [
     {
         id: "03",
         title: "03 — UI Tests",
-        description: "Validates login-page behavior and user-visible feedback in Chromium using Playwright.",
+        description: "Validates login and AI-assisted QA behavior and user-visible feedback in Chromium using Playwright.",
         cases: [
             {
                 id: "03.01",
@@ -380,6 +380,38 @@ const TEST_LIBRARY = [
                 ],
                 expectedResult: "The browser remains on /login. The Password input is invalid, its validationMessage is non-empty, and no success feedback appears.",
                 postconditions: "None verified by this test."
+            },
+            {
+                id: "03.06",
+                title: "AI-Assisted QA renders available report",
+                objective: "Verify that the latest persisted AI-assisted QA report loads automatically in the Pull Request review layout and supports accessible detail navigation.",
+                preconditions: "The AI-Assisted QA page is accessible in Chromium and its internal report APIs are intercepted with deterministic report data.",
+                testData: "Mocked GET /api/ai-reports and GET /api/ai-reports/42 responses",
+                steps: [
+                    "Open /ai in Chromium.",
+                    "Return a deterministic report index and selected Pull Request report from the intercepted Flask API requests.",
+                    "Verify the newest Pull Request is selected automatically.",
+                    "Inspect the compact risk, metrics, key findings, and changed-file summary in Overview.",
+                    "Open Findings, Test Impact, and Details to inspect deeper observations, recommended tests, and provenance.",
+                    "Select an older report and verify the backward-compatible changed-files message."
+                ],
+                expectedResult: "The page selects PR #42, displays the compact review, switches tabs without reloading, and safely renders an older report without per-file metadata.",
+                postconditions: "No report is generated and no external GitHub or OpenAI request is made."
+            },
+            {
+                id: "03.07",
+                title: "AI-Assisted QA handles unavailable reports",
+                objective: "Verify that the AI-Assisted QA page presents a safe, friendly state when persisted reports are unavailable.",
+                preconditions: "The AI-Assisted QA page is accessible in Chromium and the internal index API is intercepted with its established unavailable response.",
+                testData: "Mocked HTTP 503 response from GET /api/ai-reports",
+                steps: [
+                    "Open /ai in Chromium.",
+                    "Return the established unavailable response from the intercepted report-index request.",
+                    "Verify the loading state disappears.",
+                    "Verify the friendly unavailable message is shown and report content remains hidden."
+                ],
+                expectedResult: "The page displays AI reports are not available yet, removes the loading state, and does not display stale report analysis.",
+                postconditions: "No selected-report, GitHub, or OpenAI request is made."
             }
         ]
     }
