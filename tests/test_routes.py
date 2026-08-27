@@ -202,6 +202,18 @@ def test_get_about_reflects_current_reporting_architecture(client):
         "QA Lab dashboard",
         "Hosted on Render",
         "Pull requests validate backend, browser, and aggregation jobs; production reporting is published only from main.",
+        "AI-ASSISTED QA",
+        "Change-Impact Analysis with Deterministic Boundaries",
+        "Merged PR evidence",
+        "Source-derived QA catalog",
+        "Structured analysis context",
+        "AI change-impact analysis",
+        "Structured AI report",
+        "ai-reports branch",
+        "Read-only Flask feed",
+        "AI-Assisted QA explorer",
+        "pytest and Playwright remain",
+        "cannot trigger OpenAI",
         "WHY THIS ARCHITECTURE?",
         "Separate test execution",
         "One reporting source of truth",
@@ -222,6 +234,7 @@ def test_get_about_reflects_current_reporting_architecture(client):
         "run_all_tests.py",
         "api_tests.py",
         "project_diagram.jpeg",
+        "AI feature under development",
     ]:
         assert stale_content not in body
 
