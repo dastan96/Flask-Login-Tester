@@ -7,27 +7,27 @@ const TEST_LIBRARY = [
             {
                 id: "01.01",
                 title: "Valid credentials return successful authentication response",
-                objective: "Verify that valid automation credentials return the expected successful JSON response.",
-                preconditions: "The Flask application is running and automation_user1 is configured.",
-                testData: "POST /login JSON: username=automation_user1, password=secret_pass123",
+                objective: "Verify that both supported demo users return the expected successful JSON response.",
+                preconditions: "The Flask application is running and guest_user plus automation_user1 are configured.",
+                testData: "POST /login JSON: username=guest_user or automation_user1, password=secret_pass123",
                 steps: [
-                    "Send a JSON POST request to /login with valid automation_user1 credentials.",
+                    "Send JSON POST requests to /login with each supported demo username.",
                     "Assert that the response is JSON.",
-                    "Assert the exact status code and response body."
+                    "Assert the exact status code and username-specific response body."
                 ],
-                expectedResult: "HTTP 200 with {\"message\":\"Login successful\",\"username\":\"automation_user1\"}.",
+                expectedResult: "Each supported username returns HTTP 200 with Login successful and the submitted username.",
                 postconditions: "None verified by this test."
             },
             {
                 id: "01.02",
-                title: "Unknown username is rejected",
-                objective: "Verify that a username not present in the demo user store cannot authenticate.",
+                title: "Invalid and removed usernames are rejected",
+                objective: "Verify that the documented negative username and removed demo accounts cannot authenticate.",
                 preconditions: "The Flask application is running and the request body is JSON.",
-                testData: "POST /login JSON: username=unknown_user, password=secret_pass123",
+                testData: "POST /login JSON: username=invalid_user, automation_user2, or error_user; password=secret_pass123",
                 steps: [
-                    "Send a JSON POST request to /login with an unknown username.",
+                    "Send JSON POST requests to /login with invalid_user and each removed username.",
                     "Assert that the response is JSON.",
-                    "Assert the exact error response."
+                    "Assert the same exact error response for every rejected username."
                 ],
                 expectedResult: "HTTP 401 with {\"error\":\"Invalid credentials. Try again.\"}.",
                 postconditions: "None verified by this test."
@@ -342,12 +342,12 @@ const TEST_LIBRARY = [
             {
                 id: "03.03",
                 title: "Invalid credentials show accessible error",
-                objective: "Verify that wrong credentials produce an accessible browser-visible error.",
+                objective: "Verify that the documented negative-test username produces an accessible browser-visible error.",
                 preconditions: "The login page is accessible in Chromium.",
-                testData: "username=automation_user1, password=wrong_password",
+                testData: "username=invalid_user, password=secret_pass123",
                 steps: [
                     "Open /login in Chromium.",
-                    "Submit a valid username with an incorrect password.",
+                    "Submit the documented invalid username with the demo password.",
                     "Inspect the resulting page state."
                 ],
                 expectedResult: "The browser remains on /login and a role=alert message contains Invalid credentials. Try again.",
@@ -412,6 +412,22 @@ const TEST_LIBRARY = [
                 ],
                 expectedResult: "The page displays AI reports are not available yet, removes the loading state, and does not display stale report analysis.",
                 postconditions: "No selected-report, GitHub, or OpenAI request is made."
+            },
+            {
+                id: "03.08",
+                title: "Login demo copies credentials",
+                objective: "Verify that the Login Demo exposes accessible copy controls and copies exact credential values.",
+                preconditions: "The login page is accessible in Chromium with clipboard permissions granted for the local test origin.",
+                testData: "guest_user, automation_user1, invalid_user, and secret_pass123",
+                steps: [
+                    "Open /login in Chromium and locate all four copy controls by accessible name.",
+                    "Verify invalid_user is visibly identified as expected to fail authentication.",
+                    "Copy guest_user and read the browser clipboard.",
+                    "Copy secret_pass123 and read the browser clipboard.",
+                    "Verify visible Copied feedback after each action."
+                ],
+                expectedResult: "All copy controls are visible and enabled; username and password actions copy exact values and show Copied feedback.",
+                postconditions: "The browser clipboard contains secret_pass123 after the final copy action."
             }
         ]
     }

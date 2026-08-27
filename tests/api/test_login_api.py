@@ -1,7 +1,3 @@
-SUCCESS_RESPONSE = {
-    "message": "Login successful",
-    "username": "automation_user1",
-}
 INVALID_CREDENTIALS_RESPONSE = {"error": "Invalid credentials. Try again."}
 USERNAME_REQUIRED_RESPONSE = {"error": "Username is a required field."}
 PASSWORD_REQUIRED_RESPONSE = {"error": "Password is a required field."}
@@ -15,21 +11,27 @@ def assert_json_response(response, status_code, body):
 
 
 def test_api_01_01_login_valid_credentials(client):
-    response = client.post(
-        "/login",
-        json={"username": "automation_user1", "password": "secret_pass123"},
-    )
+    for username in ("guest_user", "automation_user1"):
+        response = client.post(
+            "/login",
+            json={"username": username, "password": "secret_pass123"},
+        )
 
-    assert_json_response(response, 200, SUCCESS_RESPONSE)
+        assert_json_response(
+            response,
+            200,
+            {"message": "Login successful", "username": username},
+        )
 
 
-def test_api_01_02_login_unknown_username(client):
-    response = client.post(
-        "/login",
-        json={"username": "unknown_user", "password": "secret_pass123"},
-    )
+def test_api_01_02_login_invalid_and_removed_usernames(client):
+    for username in ("invalid_user", "automation_user2", "error_user"):
+        response = client.post(
+            "/login",
+            json={"username": username, "password": "secret_pass123"},
+        )
 
-    assert_json_response(response, 401, INVALID_CREDENTIALS_RESPONSE)
+        assert_json_response(response, 401, INVALID_CREDENTIALS_RESPONSE)
 
 
 def test_api_01_03_login_wrong_password(client):

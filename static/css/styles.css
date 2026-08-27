@@ -298,10 +298,21 @@ body.login-page {
     font-family: 'Roboto', sans-serif;
 }
 
+.login-workspace {
+    align-items: start;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 400px));
+    justify-content: center;
+    margin: clamp(2.5rem, 6vh, 4.5rem) auto 2.5rem;
+    max-width: 880px;
+    padding: 0 1rem;
+}
+
 /* Login card styling */
 .login-card {
     max-width: 400px;
-    margin: 5% auto;
+    margin: 0;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -338,31 +349,113 @@ body.login-page {
 /* Info section styling on login page */
 .info-section {
     max-width: 400px;
-    margin: 1.5rem auto;
+    margin: 0;
     padding: 1.5rem;
     background-color: #eaf4fc;
-    color: #000;
+    color: #172033;
     border-radius: 10px;
-    text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
-.info-section h5 {
-    font-weight: 500;
-    margin-bottom: 1rem;
+.info-section h2 {
     font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
 }
-.info-section ul {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 1rem;
+.info-section .credential-helper {
+    color: #5d6b7d;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    margin: 0 0 1rem;
 }
-.info-section ul li {
-    font-size: 0.95rem;
-    margin: 0.3rem 0;
+.credential-group + .credential-group {
+    border-top: 1px solid #cbdced;
+    margin-top: 1rem;
+    padding-top: 1rem;
 }
-.info-section p {
-    font-size: 1rem;
-    font-weight: 500;
+.credential-group h3 {
+    color: #465568;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+    text-transform: uppercase;
+}
+.credential-group + .credential-group.credential-group-negative {
+    background-color: #fff7f7;
+    border-left: 3px solid #c94b4b;
+    border-radius: 6px;
+    border-top: 0;
+    padding: 0.7rem 0.75rem 0.75rem;
+}
+.credential-group-negative h3 {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+}
+.negative-test-badge {
+    background-color: #f8d7da;
+    border-radius: 999px;
+    color: #842029;
+    flex: 0 0 auto;
+    font-size: 0.66rem;
+    padding: 0.2rem 0.45rem;
+    text-transform: none;
+}
+.credential-row {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-height: 38px;
+}
+.credential-row + .credential-row {
+    margin-top: 0.35rem;
+}
+.credential-row code {
+    color: #172033;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+.credential-copy {
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #9ebcdd;
+    border-radius: 6px;
+    color: #0a58ca;
+    display: inline-flex;
+    flex: 0 0 82px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    gap: 0.35rem;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0.3rem 0.55rem;
+}
+.credential-copy:hover,
+.credential-copy:focus-visible {
+    background-color: #f5f9ff;
+    border-color: #0d6efd;
+}
+.credential-copy.is-copied {
+    background-color: #edf8f1;
+    border-color: #198754;
+    color: #146c43;
+}
+.credential-group-negative code {
+    color: #9b2c2c;
+}
+.info-section .credential-note {
+    color: #6b3f3f;
+    font-size: 0.8rem;
+    margin: 0.35rem 0 0;
+}
+
+@media (max-width: 767.98px) {
+    .login-workspace {
+        gap: 1.25rem;
+        grid-template-columns: minmax(0, 400px);
+        margin-top: 2rem;
+    }
 }
 
 /* Footer styling (used on login page) */

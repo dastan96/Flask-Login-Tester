@@ -13,11 +13,11 @@ def open_login_page(page: Page, login_ui_base_url: str):
 
 
 def username_field(page: Page):
-    return page.get_by_label("Username")
+    return page.get_by_label("Username", exact=True)
 
 
 def password_field(page: Page):
-    return page.get_by_label("Password")
+    return page.get_by_label("Password", exact=True)
 
 
 def login_button(page: Page):
@@ -48,8 +48,8 @@ def test_ui_02_valid_login_shows_success(page: Page, login_ui_base_url: str):
 def test_ui_03_invalid_credentials_show_error(page: Page, login_ui_base_url: str):
     open_login_page(page, login_ui_base_url)
 
-    username_field(page).fill(VALID_USERNAME)
-    password_field(page).fill("wrong_password")
+    username_field(page).fill("invalid_user")
+    password_field(page).fill(VALID_PASSWORD)
     login_button(page).click()
 
     expect(page).to_have_url(f"{login_ui_base_url}/login")
@@ -299,3 +299,37 @@ def test_ui_07_ai_assisted_qa_handles_unavailable_reports(page: Page, login_ui_b
     expect(page.get_by_text("AI reports are not available yet.", exact=True)).to_be_visible()
     expect(page.get_by_role("heading", name="Loading AI analysis")).not_to_be_visible()
     expect(page.get_by_role("heading", name="Change Summary")).not_to_be_visible()
+
+
+def test_ui_08_login_demo_copies_credentials(page: Page, login_ui_base_url: str):
+    page.context.grant_permissions(
+        ["clipboard-read", "clipboard-write"],
+        origin=login_ui_base_url,
+    )
+    open_login_page(page, login_ui_base_url)
+
+    guest_copy = page.get_by_role("button", name="Copy valid username guest_user")
+    automation_copy = page.get_by_role(
+        "button",
+        name="Copy valid username automation_user1",
+    )
+    invalid_copy = page.get_by_role(
+        "button",
+        name="Copy negative test username invalid_user",
+    )
+    password_copy = page.get_by_role("button", name="Copy password for valid users")
+
+    for copy_button in (guest_copy, automation_copy, invalid_copy, password_copy):
+        expect(copy_button).to_be_visible()
+        expect(copy_button).to_be_enabled()
+
+    expect(page.get_by_text("Expected to fail authentication.", exact=True)).to_be_visible()
+
+    guest_copy.click()
+    expect(guest_copy).to_contain_text("Copied")
+    assert page.evaluate("navigator.clipboard.readText()") == "guest_user"
+
+    password_copy.click()
+    expect(password_copy).to_contain_text("Copied")
+    assert page.evaluate("navigator.clipboard.readText()") == VALID_PASSWORD
+    expect(password_copy).to_contain_text("Copy", timeout=3000)

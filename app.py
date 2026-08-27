@@ -43,9 +43,7 @@ db = SQLAlchemy(app)
 # Mock user data
 users = {
     "guest_user": "secret_pass123",
-    "automation_user1": "secret_pass123",
-    "automation_user2": "secret_pass123",
-    "error_user": "secret_pass123"
+    "automation_user1": "secret_pass123"
 }
 
 def get_recent_test_results():
