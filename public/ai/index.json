@@ -2,6 +2,15 @@
   "report_version": "1.0",
   "reports": [
     {
+      "generated_at": "2026-08-27T02:40:06Z",
+      "model": "gpt-5.6-terra",
+      "pr_number": 13,
+      "prompt_version": "1.0",
+      "report_path": "reports/pr-13.json",
+      "risk_level": "medium",
+      "title": "feat: improve login demo credentials and copy controls"
+    },
+    {
       "generated_at": "2026-08-27T02:04:28Z",
       "model": "gpt-5.6-terra",
       "pr_number": 12,
