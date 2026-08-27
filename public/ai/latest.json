@@ -1,0 +1,411 @@
+{
+  "analysis": {
+    "affected_areas": [
+      {
+        "area": "AI report generation and persistence",
+        "evidence": "New services build analysis context from GitHub Pull Request data and the QA catalog, call the OpenAI Responses API, and write versioned report, latest, and index JSON artifacts under public/ai."
+      },
+      {
+        "area": "GitHub Actions automation and artifact branch publishing",
+        "evidence": "The added generate-ai-report workflow runs after merged Pull Requests targeting main, restores ai-reports history, generates a report, and commits public/ai artifacts to the ai-reports branch using contents: write permission."
+      },
+      {
+        "area": "Read-only Flask AI report APIs",
+        "evidence": "app.py adds GET /api/ai-reports and GET /api/ai-reports/<int:pr_number>, with controlled response envelopes and status mappings for unavailable, malformed, and missing upstream report data."
+      },
+      {
+        "area": "Public AI-Assisted QA explorer",
+        "evidence": "A new /ai route, ai_assisted_qa.html, ai_assisted_qa.js, and substantial CSS additions render persisted reports, report selection, tabs, risk indicators, changed-file summaries, and unavailable states."
+      },
+      {
+        "area": "External-data validation and trust boundaries",
+        "evidence": "The AI report feed service validates report/index fields, fixed report paths, change-summary totals, and optional public changed-file metadata; the browser script validates report structure and constrains GitHub Pull Request links."
+      },
+      {
+        "area": "QA catalog and controlled AI evaluation",
+        "evidence": "The new AST-based QA context service derives product-suite test metadata, while evaluation cases and evaluator logic assess grounding, risk calibration, incomplete-evidence limitations, and resistance to embedded prompt-injection text."
+      },
+      {
+        "area": "Public navigation and project documentation",
+        "evidence": "Navigation links to /ai are added to multiple templates, the Test Library gains AI report UI cases, and README/About content documents the new reporting architecture and operational boundaries."
+      }
+    ],
+    "analysis_limitations": [
+      "The supplied change summary reports 36 changed files, while the provided changed-file evidence does not clearly include all 36 files; impact assessment is limited to the visible file and patch evidence.",
+      "No CI logs, GitHub Actions run results, deployed-environment results, generated report artifacts, or live OpenAI/GitHub integration evidence were supplied.",
+      "Several patches are partial diffs rather than complete source files, so behavior outside the changed snippets cannot be fully assessed.",
+      "The existing QA catalog identifies test names and source locations but does not provide complete assertions for every pre-existing test; relevance is based on catalog metadata and the changed test evidence only."
+    ],
+    "change_summary": "This Pull Request adds an AI-assisted Pull Request change-impact feature spanning GitHub PR ingestion, source-derived QA catalog discovery, structured OpenAI analysis, persisted report artifacts, a GitHub Actions generation workflow, read-only Flask report APIs, and a browser-based /ai report explorer. It also adds deterministic evaluation scenarios and supporting documentation, dependency, navigation, styling, and test-library updates.",
+    "coverage_gaps": [
+      {
+        "area": "Merged-PR GitHub Actions generation and ai-reports branch publication",
+        "reason": "The catalog contains route and UI coverage for consuming persisted reports, but no catalog test covers the workflow’s merged-PR trigger, report-history restoration, generation invocation, idempotent no-change path, or push to the artifact branch."
+      },
+      {
+        "area": "Flask invalid Pull Request number handling",
+        "reason": "The detail route has an explicit non-positive PR-number response branch, but no supplied catalog test covers GET /api/ai-reports/0 and its expected controlled 400 response."
+      },
+      {
+        "area": "Remaining API error mappings",
+        "reason": "The route catalog covers unavailable, missing-report, and invalid-report responses, but app.py also maps invalid_json, invalid_index, and upstream_http_error errors without corresponding catalog entries."
+      },
+      {
+        "area": "Keyboard interaction for explorer tabs",
+        "reason": "The browser implementation supports ArrowLeft, ArrowRight, Home, and End navigation for tabs, while the supplied UI test evidence shows click-based tab checks only."
+      },
+      {
+        "area": "Live external-service interoperability",
+        "reason": "The supplied catalog covers mocked or intercepted boundaries. It does not establish behavior against live GitHub API responses, OpenAI service responses, GitHub Actions secrets, or the deployed raw artifact feed."
+      }
+    ],
+    "prompt_version": "1.0",
+    "qa_notes": [
+      "The new product-facing catalog entries provide direct route and browser coverage for primary available and unavailable report-explorer states.",
+      "The feature separates model-generated analysis from deterministic report provenance and change statistics; this is an important boundary to retain in future changes.",
+      "The PR description includes validation and live-evaluation statements, but no execution logs or workflow artifacts were supplied here; this analysis does not treat those statements as verified test results.",
+      "Supporting service-level tests are present in the changed-file evidence, but they are intentionally excluded from the supplied product-facing QA catalog and are therefore not cited as relevant existing catalog tests."
+    ],
+    "recommended_tests": [
+      {
+        "priority": "high",
+        "rationale": "Verify, in a controlled repository environment, that a merged Pull Request into main triggers the workflow, preserves prior ai-reports history, publishes only sanitized public/ai artifacts to ai-reports, and does not require OpenAI credentials in the Flask runtime. This specifically covers the new CI, credential, and branch-write integration boundary.",
+        "test_type": "manual",
+        "title": "Validate one merged-Pull-Request report publication in GitHub Actions"
+      },
+      {
+        "priority": "medium",
+        "rationale": "Add coverage for GET /api/ai-reports/0 to confirm the explicit invalid_pr_number response remains a 400 response with the documented safe envelope.",
+        "test_type": "route",
+        "title": "Return a controlled response for a non-positive AI report number"
+      },
+      {
+        "priority": "medium",
+        "rationale": "Exercise invalid_json, invalid_index, and upstream_http_error failures from the report-feed boundary so the additional error mappings in app.py remain intentional and do not expose upstream implementation details.",
+        "test_type": "route",
+        "title": "Map each remaining AI report feed error to its safe API response"
+      },
+      {
+        "priority": "medium",
+        "rationale": "Exercise ArrowLeft, ArrowRight, Home, and End behavior and associated aria-selected state for the newly implemented accessible tab interaction.",
+        "test_type": "ui",
+        "title": "Verify keyboard navigation across AI report explorer tabs"
+      }
+    ],
+    "relevant_existing_tests": [
+      {
+        "reason": "Directly covers the new /ai route’s server-rendered explorer structure, public navigation, and absence of an exposed generation control or API-key content.",
+        "test_id": null,
+        "title": "Get ai assisted qa renders read only report explorer"
+      },
+      {
+        "reason": "Covers the intended separation between read-only report retrieval and OpenAI credentials for the new report-index endpoint.",
+        "test_id": null,
+        "title": "Get ai report index returns feed result without openai key"
+      },
+      {
+        "reason": "Directly exercises the new selected-report Flask API response path.",
+        "test_id": null,
+        "title": "Get selected ai report returns feed result"
+      },
+      {
+        "reason": "Covers the controlled unavailable response for the upstream report-index failure path.",
+        "test_id": null,
+        "title": "Get ai report index returns safe unavailable response"
+      },
+      {
+        "reason": "Covers the new selected-report missing-artifact response mapping.",
+        "test_id": null,
+        "title": "Get missing ai report returns safe not found response"
+      },
+      {
+        "reason": "Exercises the /ai browser flow with intercepted report APIs, automatic newest-report selection, report tabs, rendered analysis content, and compatibility with reports lacking changed-file metadata.",
+        "test_id": "03.06",
+        "title": "Ai assisted qa renders available report"
+      },
+      {
+        "reason": "Exercises the browser-facing unavailable-report state when the report-index API returns an unavailable response.",
+        "test_id": "03.07",
+        "title": "Ai assisted qa handles unavailable reports"
+      },
+      {
+        "reason": "Relevant to the expanded Architecture page content describing the newly introduced AI reporting pipeline and trust boundaries.",
+        "test_id": null,
+        "title": "Get about reflects current reporting architecture"
+      }
+    ],
+    "risk_level": "high",
+    "risk_rationale": "Risk is high because the change introduces a large new cross-cutting capability (6,432 reported line changes across 36 files) with external GitHub and OpenAI dependencies, CI write access to an artifact branch, new public Flask endpoints, persisted report-data validation, and a client-rendered reporting surface. The implementation includes controlled error handling, schema restrictions, and tests, but correctness depends on integration boundaries that are broader than the existing product-facing QA catalog."
+  },
+  "change_summary": {
+    "additions": 6322,
+    "deletions": 110,
+    "files_changed": 36,
+    "total_changes": 6432
+  },
+  "changed_files": [
+    {
+      "additions": 91,
+      "deletions": 0,
+      "filename": ".github/workflows/generate-ai-report.yml",
+      "status": "added",
+      "total_changes": 91
+    },
+    {
+      "additions": 182,
+      "deletions": 106,
+      "filename": "README.md",
+      "status": "modified",
+      "total_changes": 288
+    },
+    {
+      "additions": 78,
+      "deletions": 0,
+      "filename": "app.py",
+      "status": "modified",
+      "total_changes": 78
+    },
+    {
+      "additions": 34,
+      "deletions": 0,
+      "filename": "evaluation/README.md",
+      "status": "added",
+      "total_changes": 34
+    },
+    {
+      "additions": 116,
+      "deletions": 0,
+      "filename": "evaluation/cases/documentation-only.json",
+      "status": "added",
+      "total_changes": 116
+    },
+    {
+      "additions": 186,
+      "deletions": 0,
+      "filename": "evaluation/cases/login-behavior-change.json",
+      "status": "added",
+      "total_changes": 186
+    },
+    {
+      "additions": 119,
+      "deletions": 0,
+      "filename": "evaluation/cases/prompt-injection-incomplete-evidence.json",
+      "status": "added",
+      "total_changes": 119
+    },
+    {
+      "additions": 2,
+      "deletions": 1,
+      "filename": "requirements.txt",
+      "status": "modified",
+      "total_changes": 3
+    },
+    {
+      "additions": 37,
+      "deletions": 0,
+      "filename": "scripts/generate_ai_report.py",
+      "status": "added",
+      "total_changes": 37
+    },
+    {
+      "additions": 117,
+      "deletions": 0,
+      "filename": "scripts/run_ai_evaluation.py",
+      "status": "added",
+      "total_changes": 117
+    },
+    {
+      "additions": 133,
+      "deletions": 0,
+      "filename": "services/ai_analysis_contract.py",
+      "status": "added",
+      "total_changes": 133
+    },
+    {
+      "additions": 363,
+      "deletions": 0,
+      "filename": "services/ai_analysis_evaluation_service.py",
+      "status": "added",
+      "total_changes": 363
+    },
+    {
+      "additions": 226,
+      "deletions": 0,
+      "filename": "services/ai_report_feed_service.py",
+      "status": "added",
+      "total_changes": 226
+    },
+    {
+      "additions": 183,
+      "deletions": 0,
+      "filename": "services/ai_report_service.py",
+      "status": "added",
+      "total_changes": 183
+    },
+    {
+      "additions": 21,
+      "deletions": 0,
+      "filename": "services/analysis_context_service.py",
+      "status": "added",
+      "total_changes": 21
+    },
+    {
+      "additions": 163,
+      "deletions": 0,
+      "filename": "services/github_pr_service.py",
+      "status": "added",
+      "total_changes": 163
+    },
+    {
+      "additions": 82,
+      "deletions": 0,
+      "filename": "services/openai_analysis_service.py",
+      "status": "added",
+      "total_changes": 82
+    },
+    {
+      "additions": 138,
+      "deletions": 0,
+      "filename": "services/qa_context_service.py",
+      "status": "added",
+      "total_changes": 138
+    },
+    {
+      "additions": 692,
+      "deletions": 0,
+      "filename": "static/css/styles.css",
+      "status": "modified",
+      "total_changes": 692
+    },
+    {
+      "additions": 587,
+      "deletions": 0,
+      "filename": "static/js/ai_assisted_qa.js",
+      "status": "added",
+      "total_changes": 587
+    },
+    {
+      "additions": 33,
+      "deletions": 1,
+      "filename": "static/js/test_plan.js",
+      "status": "modified",
+      "total_changes": 34
+    },
+    {
+      "additions": 54,
+      "deletions": 1,
+      "filename": "templates/about.html",
+      "status": "modified",
+      "total_changes": 55
+    },
+    {
+      "additions": 264,
+      "deletions": 0,
+      "filename": "templates/ai_assisted_qa.html",
+      "status": "added",
+      "total_changes": 264
+    },
+    {
+      "additions": 3,
+      "deletions": 0,
+      "filename": "templates/login.html",
+      "status": "modified",
+      "total_changes": 3
+    },
+    {
+      "additions": 3,
+      "deletions": 0,
+      "filename": "templates/test_plan.html",
+      "status": "modified",
+      "total_changes": 3
+    },
+    {
+      "additions": 3,
+      "deletions": 0,
+      "filename": "templates/welcome.html",
+      "status": "modified",
+      "total_changes": 3
+    },
+    {
+      "additions": 142,
+      "deletions": 0,
+      "filename": "tests/test_ai_analysis_contract.py",
+      "status": "added",
+      "total_changes": 142
+    },
+    {
+      "additions": 441,
+      "deletions": 0,
+      "filename": "tests/test_ai_analysis_evaluation_service.py",
+      "status": "added",
+      "total_changes": 441
+    },
+    {
+      "additions": 297,
+      "deletions": 0,
+      "filename": "tests/test_ai_report_feed_service.py",
+      "status": "added",
+      "total_changes": 297
+    },
+    {
+      "additions": 363,
+      "deletions": 0,
+      "filename": "tests/test_ai_report_service.py",
+      "status": "added",
+      "total_changes": 363
+    },
+    {
+      "additions": 187,
+      "deletions": 0,
+      "filename": "tests/test_analysis_context_service.py",
+      "status": "added",
+      "total_changes": 187
+    },
+    {
+      "additions": 213,
+      "deletions": 0,
+      "filename": "tests/test_github_pr_service.py",
+      "status": "added",
+      "total_changes": 213
+    },
+    {
+      "additions": 205,
+      "deletions": 0,
+      "filename": "tests/test_openai_analysis_service.py",
+      "status": "added",
+      "total_changes": 205
+    },
+    {
+      "additions": 163,
+      "deletions": 0,
+      "filename": "tests/test_qa_context_service.py",
+      "status": "added",
+      "total_changes": 163
+    },
+    {
+      "additions": 179,
+      "deletions": 1,
+      "filename": "tests/test_routes.py",
+      "status": "modified",
+      "total_changes": 180
+    },
+    {
+      "additions": 222,
+      "deletions": 0,
+      "filename": "tests/ui/test_login_ui.py",
+      "status": "modified",
+      "total_changes": 222
+    }
+  ],
+  "generated_at": "2026-08-27T02:04:28Z",
+  "model": "gpt-5.6-terra",
+  "prompt_version": "1.0",
+  "report_version": "1.0",
+  "source": {
+    "commit_sha": "fe03fd384ed2ba0351db803a661aa428ee17d32f",
+    "github_url": "https://github.com/dastan96/Flask-Login-Tester/pull/12",
+    "merged_at": "2026-08-27T02:03:38Z",
+    "pr_number": 12,
+    "pr_title": "Feat/ai assisted qafeat: add AI-assisted QA change-impact analysis"
+  }
+}
